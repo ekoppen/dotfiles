@@ -1,0 +1,12 @@
+Host dmz01
+    HostName 192.168.20.10
+    User usr01
+Host sec01
+    HostName 192.168.69.10
+    User usr01
+Host lan01
+    HostName 10.10.100.45
+    User eelko
+Host iot01
+    HostName 10.10.107.10
+    User eelko
