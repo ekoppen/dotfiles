@@ -1,0 +1,75 @@
+# ╔══════════════════════════════════════════════════════════════════════════════╗
+# ║                          🔧 Nano Configuration                            ║
+# ║                                                                            ║
+# ║  Linux-versie — navigatie consistent met Alacritty config                  ║
+# ║  Place this file at: ~/.nanorc                                             ║
+# ╚══════════════════════════════════════════════════════════════════════════════╝
+
+# ─── Algemeen ─────────────────────────────────────────────────────────────────
+
+set autoindent             # Automatisch inspringen
+set tabsize 4              # Tab = 4 spaties
+set tabstospaces           # Tabs worden spaties
+set linenumbers            # Regelnummers tonen
+set mouse                  # Muis-ondersteuning in nano (klik om cursor te plaatsen)
+                           # Selecteren? → Houd Shift ingedrukt + sleep met muis
+set smarthome              # Home-toets springt naar eerste non-whitespace
+set zap                    # Delete/Backspace verwijdert geselecteerde tekst
+set stateflags             # Toon status-indicatoren (modified, etc.)
+set indicator              # Scrollbar-indicator aan de zijkant
+set minibar                # Compacte statusbalk (moderner)
+set nohelp                 # Verberg de help-regels onderaan (meer schermruimte)
+                           # Tip: druk M-X om help tijdelijk te togelen
+
+# ─── Undo & History ──────────────────────────────────────────────────────────
+
+set historylog             # Onthoudt zoekgeschiedenis
+set positionlog            # Onthoudt cursorpositie per bestand
+
+# ─── Navigatie-bindings ──────────────────────────────────────────────────────
+#
+#  Op Linux stuurt Alacritty Alt+pijltjes als M-B / M-F.
+#  In nano 8+ zijn M-B en M-F hernoemd naar search backward/forward.
+#  We binden ze terug naar woord-navigatie:
+#
+
+bind M-B prevword all      # Alt+Left  → vorig woord
+bind M-F nextword all      # Alt+Right → volgend woord
+
+# ─── Handige extra bindings ───────────────────────────────────────────────────
+
+bind ^S savefile main      # Ctrl+S  → opslaan (zoals overal)
+bind ^Q exit all           # Ctrl+Q  → afsluiten (zoals overal)
+bind ^Z undo main          # Ctrl+Z  → ongedaan maken
+bind ^Y redo main          # Ctrl+Y  → opnieuw doen
+
+# ─── Syntax highlighting ─────────────────────────────────────────────────────
+
+include "/usr/share/nano/*.nanorc"
+
+# ─── Quick Reference ─────────────────────────────────────────────────────────
+#
+#  Navigatie:
+#    Alt+Left/Right         Spring woord voor woord
+#    Home / End             Begin/eind van regel
+#    Ctrl+Up/Down           Spring blok voor blok
+#    Ctrl+Home/End          Scroll naar top/bodem (Alacritty scrollback)
+#
+#  Selecteren:
+#    Shift + muisklik/sleep Selecteer tekst (Alacritty pakt selectie)
+#    M-A (Alt+A)            Begin selectie met toetsenbord
+#    dan pijltjes           Breid selectie uit
+#
+#  Bewerken:
+#    Ctrl+S                 Opslaan
+#    Ctrl+Q                 Afsluiten
+#    Ctrl+Z                 Ongedaan maken
+#    Ctrl+Y                 Opnieuw doen
+#    Ctrl+K                 Knip regel
+#    Ctrl+U                 Plak geknipte regel
+#    Alt+Backspace          Verwijder woord links (via Alacritty → Ctrl+W)
+#
+#  Zoeken:
+#    Ctrl+W                 Zoeken
+#    Ctrl+\                 Zoek & vervang
+#

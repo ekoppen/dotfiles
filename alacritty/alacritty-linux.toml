@@ -2,7 +2,7 @@
 # ║                        🚀 Alacritty Configuration                         ║
 # ║                                                                            ║
 # ║  State-of-the-art terminal config with Catppuccin Mocha theme              ║
-# ║  Optimized for macOS · Nerd Font icons · GPU-accelerated                   ║
+# ║  Optimized for Linux · Nerd Font icons · GPU-accelerated                   ║
 # ║                                                                            ║
 # ║  Place this file at: ~/.config/alacritty/alacritty.toml                    ║
 # ╚══════════════════════════════════════════════════════════════════════════════╝
@@ -16,20 +16,17 @@ working_directory = "None"     # Inherit from parent process
 # ─── Environment ──────────────────────────────────────────────────────────────
 
 [env]
-TERM = "xterm-256color"        # Best compatibility for SSH to Linux servers
-                               # Avoids "unknown terminal" issues on remote hosts
+TERM = "xterm-256color"        # Best compatibility for SSH to other servers
                                # If remote has alacritty terminfo: change to "alacritty"
 
 # ─── Window ───────────────────────────────────────────────────────────────────
 
 [window]
-decorations = "Buttonless"     # Clean minimal look (macOS: no title bar buttons)
-#decorations = "None"          # Even more minimal: no title bar at all
+decorations = "Full"           # Full window decorations (title bar + buttons)
+#decorations = "None"          # Minimal: no title bar at all
 dynamic_padding = true         # Center content when window doesn't fit exact cells
 dynamic_title = true           # Window title reflects running program
-opacity = 0.92                 # Subtle transparency — lets your wallpaper breathe
-blur = true                    # Frosted glass effect (macOS Monterey+)
-option_as_alt = "Both"         # Use Option as Alt key (essential for macOS)
+opacity = 0.92                 # Subtle transparency (needs compositor like picom)
 startup_mode = "Windowed"      # Options: Windowed, Maximized, Fullscreen
 
   [window.dimensions]
@@ -124,8 +121,7 @@ color = "#f9e2af"              # Catppuccin Yellow (only used if duration > 0)
 # Clickable URLs — launch in default browser
 regex = "(ipfs:|ipns:|magnet:|mailto:|gemini://|gopher://|https://|http://|news:|file:|git://|ssh:|ftp://)[^\u0000-\u001F\u007F-\u009F<>\"\\s{-}\\^⟨⟩`]+"
 hyperlinks = true
-command = "open"               # macOS: opens URL in default browser
-                               # Linux: change to "xdg-open"
+command = "xdg-open"           # Linux: opens URL in default browser
 post_processing = true
 persist = false
 
@@ -182,54 +178,51 @@ persist = false
 hide_when_typing = true            # Cursor verdwijnt tijdens typen
 
 # ─── Keyboard ─────────────────────────────────────────────────────────────────
+#
+#  Op Linux is Alt gewoon Alt — geen option_as_alt nodig.
+#  Ctrl wordt gebruikt i.p.v. Cmd (dat bestaat niet op Linux).
+#
 
 [keyboard]
 bindings = [
-  # ── macOS Navigation (like Terminal.app / iTerm2) ──
+  # ── Navigatie ──
   #
-  # Cmd+Left/Right  = begin/end of line
-  { key = "Left",   mods = "Command",         chars = "\u0001"              },  # Ctrl+A (Home)
-  { key = "Right",  mods = "Command",         chars = "\u0005"              },  # Ctrl+E (End)
-  # Cmd+Up/Down = scroll to top/bottom of scrollback
-  { key = "Up",     mods = "Command",         action = "ScrollToTop"        },
-  { key = "Down",   mods = "Command",         action = "ScrollToBottom"     },
+  # Home/End werkt out-of-the-box op Linux voor begin/eind regel.
+  # Alt+Left/Right = jump word by word (werkt native in de meeste shells)
   #
-  # Option+Left/Right = jump word by word
-  { key = "Left",   mods = "Option",          chars = "\u001bb"             },  # Alt+B (word left)
-  { key = "Right",  mods = "Option",          chars = "\u001bf"             },  # Alt+F (word right)
+  # Ctrl+Home/End = scroll naar top/bodem van scrollback
+  { key = "Home",  mods = "Control",          action = "ScrollToTop"        },
+  { key = "End",   mods = "Control",          action = "ScrollToBottom"     },
   #
   # Delete shortcuts
-  { key = "Back",   mods = "Command",         chars = "\u0015"              },  # Cmd+Backspace  = delete entire line
-  { key = "Back",   mods = "Option",          chars = "\u0017"              },  # Opt+Backspace  = delete word left
-  { key = "Delete", mods = "Option",          chars = "\u001bd"             },  # Opt+Delete     = delete word right
+  { key = "Back",  mods = "Control",          chars = "\u0015"              },  # Ctrl+Backspace = delete entire line
+  { key = "Back",  mods = "Alt",              chars = "\u0017"              },  # Alt+Backspace  = delete word left
+  { key = "Delete", mods = "Alt",             chars = "\u001bd"             },  # Alt+Delete     = delete word right
 
   # ── Window Management ──
-  { key = "N",      mods = "Command",         action = "CreateNewWindow"    },
-  { key = "Return", mods = "Command|Shift",   action = "SpawnNewInstance"   },
+  { key = "N",      mods = "Control|Shift",   action = "CreateNewWindow"    },
+  { key = "Return", mods = "Control|Shift",   action = "SpawnNewInstance"   },
   { key = "F11",    mods = "None",            action = "ToggleFullscreen"   },
 
   # ── Font Size ──
-  { key = "Plus",   mods = "Command",         action = "IncreaseFontSize"   },
-  { key = "Minus",  mods = "Command",         action = "DecreaseFontSize"   },
-  { key = "Key0",   mods = "Command",         action = "ResetFontSize"      },
+  { key = "Plus",   mods = "Control",         action = "IncreaseFontSize"   },
+  { key = "Minus",  mods = "Control",         action = "DecreaseFontSize"   },
+  { key = "Key0",   mods = "Control",         action = "ResetFontSize"      },
 
   # ── Vi Mode ──
   { key = "Space",  mods = "Control|Shift",   action = "ToggleViMode"       },
 
   # ── Search ──
-  { key = "F",      mods = "Command",         action = "SearchForward"      },
-  { key = "B",      mods = "Command|Shift",   action = "SearchBackward"     },
+  { key = "F",      mods = "Control|Shift",   action = "SearchForward"      },
+  { key = "B",      mods = "Control|Shift",   action = "SearchBackward"     },
 
   # ── Scrolling ──
   { key = "PageUp",   mods = "Shift",         action = "ScrollPageUp"       },
   { key = "PageDown", mods = "Shift",         action = "ScrollPageDown"     },
-  { key = "Home",     mods = "Shift",         action = "ScrollToTop"        },
-  { key = "End",      mods = "Shift",         action = "ScrollToBottom"     },
-  { key = "K",        mods = "Command",       action = "ClearHistory"       },
+  { key = "K",        mods = "Control|Shift", action = "ClearHistory"       },
 
-  # ── SSH / Server Convenience ──
-  # Quick new window (handy for parallel SSH sessions)
-  { key = "T",      mods = "Command",         action = "CreateNewWindow"    },
+  # ── Quick new window (handy for parallel SSH sessions) ──
+  { key = "T",      mods = "Control|Shift",   action = "CreateNewWindow"    },
 ]
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -336,23 +329,23 @@ bindings = [
 #                            📝 Quick Reference
 # ═══════════════════════════════════════════════════════════════════════════════
 #
-#  Keybindings (macOS):
+#  Keybindings (Linux):
 #
-#    Navigation (like Terminal.app / iTerm2):
-#      Cmd+Left/Right     Begin / end of line
-#      Cmd+Up/Down        Scroll to top / bottom
-#      Opt+Left/Right     Jump word by word
-#      Cmd+Backspace      Delete entire line
-#      Opt+Backspace      Delete word left
-#      Opt+Delete         Delete word right
+#    Navigation:
+#      Home / End             Begin / end of line
+#      Ctrl+Home / Ctrl+End   Scroll to top / bottom
+#      Alt+Left / Alt+Right   Jump word by word (shell/nano native)
+#      Ctrl+Backspace         Delete entire line
+#      Alt+Backspace          Delete word left
+#      Alt+Delete             Delete word right
 #
 #    General:
-#    Cmd+N / Cmd+T      New window (parallel SSH sessions!)
-#    Cmd+Shift+Enter    New instance
-#    Cmd+Plus/Minus/0   Font size controls
-#    Cmd+F              Search forward
-#    Cmd+Shift+B        Search backward
-#    Cmd+K              Clear history
+#    Ctrl+Shift+N / T   New window
+#    Ctrl+Shift+Enter   New instance
+#    Ctrl+Plus/Minus/0  Font size controls
+#    Ctrl+Shift+F       Search forward
+#    Ctrl+Shift+B       Search backward
+#    Ctrl+Shift+K       Clear history
 #    Ctrl+Shift+Space   Toggle vi mode
 #    Ctrl+Shift+U       Highlight & open URLs
 #    Ctrl+Shift+I       Highlight & copy IP addresses
@@ -374,7 +367,7 @@ bindings = [
 #        scp alacritty.terminfo user@host:~/
 #        ssh user@host "tic -x alacritty.terminfo && rm alacritty.terminfo"
 #    • Or just keep TERM="xterm-256color" (default in this config)
-#    • Use Cmd+T to quickly open new windows for multiple servers
+#    • Use Ctrl+Shift+T to quickly open new windows for multiple servers
 #    • Ctrl+Shift+I lets you quickly copy IP addresses from output
 #    • 50k scrollback = plenty of room for log tailing
 #
