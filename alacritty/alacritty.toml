@@ -1,0 +1,347 @@
+# ╔══════════════════════════════════════════════════════════════════════════════╗
+# ║                        🚀 Alacritty Configuration                         ║
+# ║                                                                            ║
+# ║  State-of-the-art terminal config with Catppuccin Mocha theme              ║
+# ║  Optimized for macOS · Nerd Font icons · GPU-accelerated                   ║
+# ║                                                                            ║
+# ║  Place this file at: ~/.config/alacritty/alacritty.toml                    ║
+# ╚══════════════════════════════════════════════════════════════════════════════╝
+
+# ─── General ──────────────────────────────────────────────────────────────────
+
+[general]
+live_config_reload = true      # Changes apply instantly on save
+working_directory = "None"     # Inherit from parent process
+
+# ─── Environment ──────────────────────────────────────────────────────────────
+
+[env]
+TERM = "xterm-256color"        # Best compatibility for SSH to Linux servers
+                               # Avoids "unknown terminal" issues on remote hosts
+                               # If remote has alacritty terminfo: change to "alacritty"
+
+# ─── Window ───────────────────────────────────────────────────────────────────
+
+[window]
+decorations = "Buttonless"     # Clean minimal look (macOS: no title bar buttons)
+#decorations = "None"          # Even more minimal: no title bar at all
+dynamic_padding = true         # Center content when window doesn't fit exact cells
+dynamic_title = true           # Window title reflects running program
+opacity = 0.92                 # Subtle transparency — lets your wallpaper breathe
+blur = true                    # Frosted glass effect (macOS Monterey+)
+option_as_alt = "Both"         # Use Option as Alt key (essential for macOS)
+startup_mode = "Windowed"      # Options: Windowed, Maximized, Fullscreen
+
+  [window.dimensions]
+  columns = 140                # Default width (characters)
+  lines = 40                   # Default height (lines)
+
+  [window.padding]
+  x = 14                       # Horizontal padding (pixels)
+  y = 14                       # Vertical padding (pixels)
+
+# ─── Scrolling ────────────────────────────────────────────────────────────────
+
+[scrolling]
+history = 50000                # Extra scrollback for long server sessions & log tailing
+multiplier = 3                 # Scroll speed multiplier
+
+# ─── Font ─────────────────────────────────────────────────────────────────────
+#
+#  Recommended: Install a Nerd Font for icon support (starship, lsd, etc.)
+#  Download from: https://www.nerdfonts.com/font-downloads
+#
+#  Popular choices:
+#    • "JetBrainsMono Nerd Font"    — crisp, great ligature support
+#    • "FiraCode Nerd Font"         — classic coding font with ligatures
+#    • "CaskaydiaCove Nerd Font"    — Cascadia Code + Nerd Font icons
+#    • "MesloLGS Nerd Font Mono"    — great for Powerlevel10k
+#    • "Hack Nerd Font"             — clean and highly readable
+#
+
+[font]
+size = 14.0                    # Adjust to your display & preference
+builtin_box_drawing = true     # Use built-in box drawing characters
+
+  [font.normal]
+  family = "JetBrainsMono Nerd Font"
+  style = "Regular"
+
+  [font.bold]
+  family = "JetBrainsMono Nerd Font"
+  style = "Bold"
+
+  [font.italic]
+  family = "JetBrainsMono Nerd Font"
+  style = "Italic"
+
+  [font.bold_italic]
+  family = "JetBrainsMono Nerd Font"
+  style = "Bold Italic"
+
+  # Fine-tune glyph positioning
+  [font.offset]
+  x = 0                        # Letter spacing adjustment
+  y = 1                        # Line spacing adjustment (slightly roomier)
+
+  [font.glyph_offset]
+  x = 0
+  y = 0
+
+# ─── Cursor ───────────────────────────────────────────────────────────────────
+
+[cursor]
+unfocused_hollow = true        # Hollow cursor when window not focused
+thickness = 0.2                # Beam cursor thickness (0.0–1.0)
+
+  [cursor.style]
+  shape = "Beam"               # Options: Block, Underline, Beam
+  blinking = "On"              # Options: Never, Off, On, Always
+
+  [cursor.vi_mode_style]
+  shape = "Block"              # Block cursor in vi mode for clarity
+  blinking = "Off"
+
+# ─── Selection ────────────────────────────────────────────────────────────────
+
+[selection]
+save_to_clipboard = true       # Auto-copy selected text to clipboard
+semantic_escape_chars = ",│`|:\"' ()[]{}<>\t"
+
+# ─── Bell ─────────────────────────────────────────────────────────────────────
+
+[bell]
+animation = "EaseOut"          # Visual bell animation
+duration = 80                  # Duration in ms (0 = disabled)
+color = "#f9e2af"              # Catppuccin Yellow — subtle visual flash
+
+# ─── Terminal Hints ───────────────────────────────────────────────────────────
+#
+#  Click URLs, IP addresses, file paths and more with keyboard or mouse!
+#
+
+[[hints.enabled]]
+# Clickable URLs — launch in default browser
+regex = "(ipfs:|ipns:|magnet:|mailto:|gemini://|gopher://|https://|http://|news:|file:|git://|ssh:|ftp://)[^\u0000-\u001F\u007F-\u009F<>\"\\s{-}\\^⟨⟩`]+"
+hyperlinks = true
+command = "open"               # macOS: opens URL in default browser
+                               # Linux: change to "xdg-open"
+post_processing = true
+persist = false
+
+  [hints.enabled.binding]
+  key = "U"
+  mods = "Control|Shift"      # Ctrl+Shift+U to highlight/open URLs
+
+  [hints.enabled.mouse]
+  enabled = true
+  mods = "None"                # Just click URLs to open them!
+
+[[hints.enabled]]
+# Quick-copy IP addresses (v4) — handy for server work
+regex = '(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})'
+action = "Copy"
+post_processing = false
+persist = false
+
+  [hints.enabled.binding]
+  key = "I"
+  mods = "Control|Shift"      # Ctrl+Shift+I to highlight/copy IP addresses
+
+[[hints.enabled]]
+# Quick-copy file paths — useful when reading logs or error output
+regex = '(~?/[\w.\-@]+)+'
+action = "Copy"
+post_processing = false
+persist = false
+
+  [hints.enabled.binding]
+  key = "P"
+  mods = "Control|Shift"      # Ctrl+Shift+P to highlight/copy file paths
+
+[[hints.enabled]]
+# Quick-copy SHA hashes (git commits, checksums)
+regex = '[0-9a-f]{7,40}'
+action = "Copy"
+post_processing = false
+persist = false
+
+  [hints.enabled.binding]
+  key = "G"
+  mods = "Control|Shift"      # Ctrl+Shift+G to highlight/copy git hashes
+
+# ─── Keyboard ─────────────────────────────────────────────────────────────────
+
+[keyboard]
+bindings = [
+  # ── Window Management ──
+  { key = "N",      mods = "Command",         action = "CreateNewWindow"    },
+  { key = "Return", mods = "Command|Shift",   action = "SpawnNewInstance"   },
+  { key = "F11",    mods = "None",            action = "ToggleFullscreen"   },
+
+  # ── Font Size ──
+  { key = "Plus",   mods = "Command",         action = "IncreaseFontSize"   },
+  { key = "Minus",  mods = "Command",         action = "DecreaseFontSize"   },
+  { key = "Key0",   mods = "Command",         action = "ResetFontSize"      },
+
+  # ── Vi Mode ──
+  { key = "Space",  mods = "Control|Shift",   action = "ToggleViMode"       },
+
+  # ── Search ──
+  { key = "F",      mods = "Command",         action = "SearchForward"      },
+  { key = "B",      mods = "Command|Shift",   action = "SearchBackward"     },
+
+  # ── Scrolling ──
+  { key = "PageUp",   mods = "Shift",         action = "ScrollPageUp"       },
+  { key = "PageDown", mods = "Shift",         action = "ScrollPageDown"     },
+  { key = "Home",     mods = "Shift",         action = "ScrollToTop"        },
+  { key = "End",      mods = "Shift",         action = "ScrollToBottom"     },
+  { key = "K",        mods = "Command",       action = "ClearHistory"       },
+
+  # ── SSH / Server Convenience ──
+  # Quick new window (handy for parallel SSH sessions)
+  { key = "T",      mods = "Command",         action = "CreateNewWindow"    },
+]
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#                        🎨 Catppuccin Mocha Color Theme
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+#  A soothing pastel theme for the high-spirited!
+#  https://github.com/catppuccin/catppuccin
+#
+#  Palette reference:
+#    Rosewater #f5e0dc  ·  Flamingo #f2cdcd  ·  Pink    #f5c2e7
+#    Mauve    #cba6f7   ·  Red      #f38ba8  ·  Maroon  #eba0ac
+#    Peach    #fab387   ·  Yellow   #f9e2af  ·  Green   #a6e3a1
+#    Teal     #94e2d5   ·  Sky      #89dceb  ·  Sapphire #74c7ec
+#    Blue     #89b4fa   ·  Lavender #b4befe
+#    Text     #cdd6f4   ·  Subtext1 #bac2de  ·  Subtext0 #a6adc8
+#    Overlay2 #9399b2   ·  Overlay1 #7f849c  ·  Overlay0 #6c7086
+#    Surface2 #585b70   ·  Surface1 #45475a  ·  Surface0 #313244
+#    Base     #1e1e2e   ·  Mantle   #181825  ·  Crust    #11111b
+
+[colors]
+
+  [colors.primary]
+  background = "#1e1e2e"       # Base
+  foreground = "#cdd6f4"       # Text
+  dim_foreground = "#a6adc8"   # Subtext0
+  bright_foreground = "#cdd6f4" # Text
+
+  [colors.cursor]
+  text = "#1e1e2e"             # Base
+  cursor = "#f5e0dc"           # Rosewater
+
+  [colors.vi_mode_cursor]
+  text = "#1e1e2e"             # Base
+  cursor = "#b4befe"           # Lavender
+
+  [colors.search.matches]
+  foreground = "#1e1e2e"       # Base
+  background = "#a6adc8"       # Subtext0
+
+  [colors.search.focused_match]
+  foreground = "#1e1e2e"       # Base
+  background = "#a6e3a1"       # Green
+
+  [colors.hints.start]
+  foreground = "#1e1e2e"       # Base
+  background = "#f9e2af"       # Yellow
+
+  [colors.hints.end]
+  foreground = "#1e1e2e"       # Base
+  background = "#a6adc8"       # Subtext0
+
+  [colors.selection]
+  text = "#1e1e2e"             # Base
+  background = "#f5e0dc"       # Rosewater
+
+  [colors.footer_bar]
+  foreground = "#1e1e2e"       # Base
+  background = "#a6adc8"       # Subtext0
+
+  # Normal colors
+  [colors.normal]
+  black   = "#45475a"          # Surface1
+  red     = "#f38ba8"          # Red
+  green   = "#a6e3a1"          # Green
+  yellow  = "#f9e2af"          # Yellow
+  blue    = "#89b4fa"          # Blue
+  magenta = "#f5c2e7"          # Pink
+  cyan    = "#94e2d5"          # Teal
+  white   = "#bac2de"          # Subtext1
+
+  # Bright colors
+  [colors.bright]
+  black   = "#585b70"          # Surface2
+  red     = "#f38ba8"          # Red
+  green   = "#a6e3a1"          # Green
+  yellow  = "#f9e2af"          # Yellow
+  blue    = "#89b4fa"          # Blue
+  magenta = "#f5c2e7"          # Pink
+  cyan    = "#94e2d5"          # Teal
+  white   = "#a6adc8"          # Subtext0
+
+  # Dim colors (slightly muted variants)
+  [colors.dim]
+  black   = "#45475a"          # Surface1
+  red     = "#f38ba8"          # Red
+  green   = "#a6e3a1"          # Green
+  yellow  = "#f9e2af"          # Yellow
+  blue    = "#89b4fa"          # Blue
+  magenta = "#f5c2e7"          # Pink
+  cyan    = "#94e2d5"          # Teal
+  white   = "#bac2de"          # Subtext1
+
+  # Indexed colors (16–255, optional overrides)
+  [[colors.indexed_colors]]
+  index = 16
+  color = "#fab387"            # Peach
+
+  [[colors.indexed_colors]]
+  index = 17
+  color = "#f5e0dc"            # Rosewater
+
+# ═══════════════════════════════════════════════════════════════════════════════
+#                            📝 Quick Reference
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+#  Keybindings (macOS):
+#    Cmd+N / Cmd+T      New window (parallel SSH sessions!)
+#    Cmd+Shift+Enter    New instance
+#    Cmd+Plus/Minus/0   Font size controls
+#    Cmd+F              Search forward
+#    Cmd+Shift+B        Search backward
+#    Cmd+K              Clear history
+#    Ctrl+Shift+Space   Toggle vi mode
+#    Ctrl+Shift+U       Highlight & open URLs
+#    Ctrl+Shift+I       Highlight & copy IP addresses
+#    Ctrl+Shift+P       Highlight & copy file paths
+#    Ctrl+Shift+G       Highlight & copy git hashes
+#    F11                Toggle fullscreen
+#
+#  Vi Mode:
+#    v                  Start selection
+#    y                  Copy selection
+#    /                  Search forward
+#    ?                  Search backward
+#    n/N                Next/previous match
+#    hjkl               Navigation
+#
+#  SSH Tips:
+#    • If remote shows "unknown terminal", it needs terminfo:
+#        infocmp > alacritty.terminfo
+#        scp alacritty.terminfo user@host:~/
+#        ssh user@host "tic -x alacritty.terminfo && rm alacritty.terminfo"
+#    • Or just keep TERM="xterm-256color" (default in this config)
+#    • Use Cmd+T to quickly open new windows for multiple servers
+#    • Ctrl+Shift+I lets you quickly copy IP addresses from output
+#    • 50k scrollback = plenty of room for log tailing
+#
+#  General Tips:
+#    • URLs are clickable by default (just click!)
+#    • Config reloads automatically on save
+#    • Use `alacritty msg config 'key=value'` for runtime changes
+#
+# ═══════════════════════════════════════════════════════════════════════════════

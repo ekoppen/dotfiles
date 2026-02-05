@@ -1,0 +1,98 @@
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║  .bashrc  ·  Managed by dotfiles                               ║
+# ╚══════════════════════════════════════════════════════════════════╝
+
+# Exit if not interactive
+[[ $- != *i* ]] && return
+
+# ─── History ──────────────────────────────────────────────────────
+
+HISTFILE="$HOME/.bash_history"
+HISTSIZE=50000
+HISTFILESIZE=50000
+HISTCONTROL=ignoreboth:erasedups   # No duplicates, no space-prefixed
+shopt -s histappend                # Append, don't overwrite
+
+# Write history after each command (sync across sessions)
+PROMPT_COMMAND="history -a; history -c; history -r; ${PROMPT_COMMAND:-}"
+
+# ─── Shell Options ────────────────────────────────────────────────
+
+shopt -s checkwinsize    # Update LINES/COLUMNS after each command
+shopt -s cdspell         # Autocorrect typos in cd
+shopt -s dirspell        # Autocorrect dir name typos in completion
+shopt -s autocd          # cd by typing directory name
+shopt -s globstar        # ** matches recursively
+shopt -s nocaseglob      # Case-insensitive globbing
+
+# ─── Path ─────────────────────────────────────────────────────────
+
+# Homebrew (macOS)
+if [[ -d "/opt/homebrew/bin" ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
+# Local bins
+[[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH"
+[[ -d "$HOME/bin" ]]        && export PATH="$HOME/bin:$PATH"
+
+# ─── Environment ──────────────────────────────────────────────────
+
+export EDITOR="${EDITOR:-nano}"
+export VISUAL="$EDITOR"
+export LANG="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
+
+# ─── Prompt ───────────────────────────────────────────────────────
+
+# If Starship is installed, use it. Otherwise use a custom prompt.
+if command -v starship &>/dev/null; then
+    eval "$(starship init bash)"
+else
+    # Git branch in prompt
+    __git_branch() {
+        git branch 2>/dev/null | sed -n 's/* \(.*\)/ (\1)/p'
+    }
+
+    # Color prompt: user@host:path (branch)$
+    PS1='\[\033[0;32m\]\u@\h\[\033[0m\]:\[\033[0;34m\]\w\[\033[0;35m\]$(__git_branch)\[\033[0;33m\] \$\[\033[0m\] '
+fi
+
+# ─── Completion ───────────────────────────────────────────────────
+
+# Enable bash completion if available
+if [[ -f /usr/share/bash-completion/bash_completion ]]; then
+    source /usr/share/bash-completion/bash_completion
+elif [[ -f /etc/bash_completion ]]; then
+    source /etc/bash_completion
+elif [[ -f "/opt/homebrew/etc/profile.d/bash_completion.sh" ]]; then
+    source "/opt/homebrew/etc/profile.d/bash_completion.sh"
+fi
+
+# ─── Shared Aliases & Functions ───────────────────────────────────
+
+[[ -f "$HOME/.aliases" ]]   && source "$HOME/.aliases"
+[[ -f "$HOME/.functions" ]] && source "$HOME/.functions"
+
+# ─── Tool Integrations ───────────────────────────────────────────
+
+# fzf (fuzzy finder)
+if command -v fzf &>/dev/null; then
+    eval "$(fzf --bash)" 2>/dev/null || true
+fi
+
+# zoxide (smart cd)
+if command -v zoxide &>/dev/null; then
+    eval "$(zoxide init bash)"
+fi
+
+# ─── SSH Agent ────────────────────────────────────────────────────
+
+# Auto-start ssh-agent if not running (Linux servers)
+if [[ "$(uname -s)" != "Darwin" ]] && [[ -z "${SSH_AUTH_SOCK:-}" ]]; then
+    eval "$(ssh-agent -s)" >/dev/null 2>&1
+fi
+
+# ─── Local Overrides ─────────────────────────────────────────────
+
+[[ -f "$HOME/.bashrc.local" ]] && source "$HOME/.bashrc.local"

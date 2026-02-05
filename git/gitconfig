@@ -1,0 +1,66 @@
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║  .gitconfig  ·  Managed by dotfiles                            ║
+# ║                                                                 ║
+# ║  Set your name/email in ~/.gitconfig.local:                     ║
+# ║    [user]                                                       ║
+# ║        name = Your Name                                         ║
+# ║        email = your@email.com                                   ║
+# ╚══════════════════════════════════════════════════════════════════╝
+
+[include]
+    path = ~/.gitconfig.local
+
+[init]
+    defaultBranch = main
+
+[core]
+    editor = nano
+    autocrlf = input
+    excludesFile = ~/.gitignore_global
+    pager = less -FRX
+
+[color]
+    ui = auto
+
+[pull]
+    rebase = true
+
+[push]
+    default = current
+    autoSetupRemote = true
+
+[fetch]
+    prune = true
+
+[merge]
+    conflictStyle = diff3
+
+[diff]
+    colorMoved = default
+
+[alias]
+    s  = status -sb
+    l  = log --oneline --graph --decorate -20
+    la = log --oneline --graph --decorate --all -30
+    d  = diff
+    ds = diff --staged
+    co = checkout
+    cb = checkout -b
+    cm = commit -m
+    ca = commit -am
+    p  = pull
+    pu = push
+    pf = push --force-with-lease
+    br = branch
+    st = stash
+    sp = stash pop
+    undo = reset --soft HEAD~1
+    amend = commit --amend --no-edit
+    wip = !git add -A && git commit -m 'WIP'
+    # Show last commit
+    last = log -1 HEAD --stat
+    # Pretty log with dates
+    history = log --pretty=format:'%C(yellow)%h%Creset %C(green)%ad%Creset | %s%C(red)%d%Creset %C(blue)[%an]%Creset' --date=short
+
+[url "git@github.com:"]
+    insteadOf = https://github.com/

@@ -1,0 +1,94 @@
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║  Shared Aliases  ·  Sourced by both .zshrc and .bashrc         ║
+# ╚══════════════════════════════════════════════════════════════════╝
+
+# ─── Navigation ───────────────────────────────────────────────────
+
+alias ..="cd .."
+alias ...="cd ../.."
+alias ....="cd ../../.."
+alias ~="cd ~"
+
+# ─── Listing (with color) ────────────────────────────────────────
+
+if command -v eza &>/dev/null; then
+    # Modern replacement for ls (install: brew install eza / apt install eza)
+    alias ls="eza --icons --group-directories-first"
+    alias ll="eza -la --icons --group-directories-first --git"
+    alias lt="eza -laT --icons --level=2"
+    alias l="eza -l --icons --group-directories-first"
+else
+    alias ls="ls --color=auto"
+    alias ll="ls -lah"
+    alias l="ls -lh"
+fi
+
+# ─── Safety Nets ──────────────────────────────────────────────────
+
+alias rm="rm -i"
+alias mv="mv -i"
+alias cp="cp -i"
+alias ln="ln -i"
+
+# ─── Grep ─────────────────────────────────────────────────────────
+
+alias grep="grep --color=auto"
+alias fgrep="fgrep --color=auto"
+alias egrep="egrep --color=auto"
+
+# ─── Disk / System ───────────────────────────────────────────────
+
+alias df="df -h"
+alias du="du -h"
+alias free="free -h 2>/dev/null || true"   # Linux only
+
+# ─── Networking ───────────────────────────────────────────────────
+
+alias ports="ss -tulnp 2>/dev/null || netstat -tulnp"
+alias myip="curl -s ifconfig.me && echo"
+alias localip="hostname -I 2>/dev/null || ipconfig getifaddr en0"
+alias ping="ping -c 5"
+
+# ─── Docker ───────────────────────────────────────────────────────
+
+alias d="docker"
+alias dc="docker compose"
+alias dps="docker ps --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'"
+alias dlog="docker logs -f"
+alias dex="docker exec -it"
+
+# ─── Git Shortcuts ────────────────────────────────────────────────
+
+alias g="git"
+alias gs="git status -sb"
+alias gl="git log --oneline --graph --decorate -20"
+alias gd="git diff"
+alias gp="git pull"
+alias gpu="git push"
+alias gc="git commit"
+alias gca="git commit -a"
+alias gco="git checkout"
+alias gb="git branch"
+
+# ─── SSH ──────────────────────────────────────────────────────────
+
+alias sshconfig="$EDITOR ~/.ssh/config.d/"
+
+# ─── Dotfiles ─────────────────────────────────────────────────────
+
+alias dotfiles="cd ~/.dotfiles"
+alias dotfiles-edit="$EDITOR ~/.dotfiles"
+alias dotfiles-update="cd ~/.dotfiles && git pull && ./install.sh"
+
+# ─── Quick Edit Configs ──────────────────────────────────────────
+
+alias zshrc="$EDITOR ~/.zshrc"
+alias bashrc="$EDITOR ~/.bashrc"
+
+# ─── Misc ─────────────────────────────────────────────────────────
+
+alias cls="clear"
+alias h="history | tail -30"
+alias path='echo $PATH | tr ":" "\n"'
+alias now="date '+%Y-%m-%d %H:%M:%S'"
+alias week="date +%V"

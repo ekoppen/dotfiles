@@ -1,0 +1,14 @@
+# Machine-specific overrides (stay local)
+ssh/config.d/local
+
+# SSH keys should never be in git
+*.pem
+id_*
+*.pub
+known_hosts
+known_hosts.old
+sockets/
+
+# OS junk
+.DS_Store
+Thumbs.db

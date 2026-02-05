@@ -1,0 +1,9 @@
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║  SSH Config  ·  Managed by dotfiles                            ║
+# ║                                                                 ║
+# ║  Host entries go in ~/.ssh/config.d/                            ║
+# ║  Machine-specific hosts go in ~/.ssh/config.d/local             ║
+# ╚══════════════════════════════════════════════════════════════════╝
+
+# Load all config fragments
+Include config.d/*

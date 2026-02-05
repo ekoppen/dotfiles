@@ -1,0 +1,8 @@
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║  .bash_profile  ·  Managed by dotfiles                         ║
+# ║                                                                 ║
+# ║  macOS runs .bash_profile for login shells instead of .bashrc   ║
+# ║  This ensures .bashrc is always loaded                          ║
+# ╚══════════════════════════════════════════════════════════════════╝
+
+[[ -f "$HOME/.bashrc" ]] && source "$HOME/.bashrc"

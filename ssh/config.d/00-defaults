@@ -1,0 +1,27 @@
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║  SSH Defaults  ·  Applied to all connections                    ║
+# ╚══════════════════════════════════════════════════════════════════╝
+
+Host *
+    # ── Connection ────────────────────────────────────────────────
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+    ConnectTimeout 10
+
+    # ── Multiplexing (reuse connections = faster ssh/scp) ─────────
+    ControlMaster auto
+    ControlPath ~/.ssh/sockets/%r@%h-%p
+    ControlPersist 600
+
+    # ── Security ──────────────────────────────────────────────────
+    IdentitiesOnly yes
+    AddKeysToAgent yes
+    HashKnownHosts no
+
+    # ── macOS Keychain (ignored on Linux) ─────────────────────────
+    IgnoreUnknown UseKeychain
+    UseKeychain yes
+
+    # ── Quality of Life ───────────────────────────────────────────
+    Compression yes
+    StrictHostKeyChecking ask

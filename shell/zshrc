@@ -1,0 +1,105 @@
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║  .zshrc  ·  Managed by dotfiles                                ║
+# ╚══════════════════════════════════════════════════════════════════╝
+
+# ─── History ──────────────────────────────────────────────────────
+
+HISTFILE="$HOME/.zsh_history"
+HISTSIZE=50000
+SAVEHIST=50000
+setopt SHARE_HISTORY          # Share history across sessions
+setopt HIST_EXPIRE_DUPS_FIRST # Expire duplicate entries first
+setopt HIST_IGNORE_DUPS       # Don't record duplicates
+setopt HIST_IGNORE_SPACE      # Don't record commands starting with space
+setopt HIST_VERIFY            # Show command before executing from history
+setopt APPEND_HISTORY         # Append to history file
+setopt INC_APPEND_HISTORY     # Write immediately, not at shell exit
+
+# ─── General Options ─────────────────────────────────────────────
+
+setopt AUTO_CD                # cd by typing directory name
+setopt AUTO_PUSHD             # Push directory onto stack with cd
+setopt PUSHD_IGNORE_DUPS      # Don't push duplicates
+setopt CORRECT                # Suggest corrections for typos
+setopt INTERACTIVE_COMMENTS   # Allow comments in interactive shell
+setopt NO_BEEP                # Silence
+
+# ─── Completion ───────────────────────────────────────────────────
+
+autoload -Uz compinit
+compinit
+
+zstyle ':completion:*' menu select                      # Arrow key menu
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'    # Case-insensitive
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}" # Colorized completion
+zstyle ':completion:*:descriptions' format '%F{yellow}── %d ──%f'
+zstyle ':completion:*:warnings' format '%F{red}No matches%f'
+
+# ─── Key Bindings ─────────────────────────────────────────────────
+
+bindkey -e                    # Emacs-style bindings (Ctrl+A/E etc.)
+bindkey '^[[A' history-search-backward   # Up arrow: search history
+bindkey '^[[B' history-search-forward    # Down arrow: search history
+bindkey '^[[3~' delete-char              # Delete key
+bindkey '^[[H' beginning-of-line         # Home key
+bindkey '^[[F' end-of-line               # End key
+
+# ─── Path ─────────────────────────────────────────────────────────
+
+# Homebrew (macOS)
+if [[ -d "/opt/homebrew/bin" ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
+
+# Local bins
+[[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH"
+[[ -d "$HOME/bin" ]]        && export PATH="$HOME/bin:$PATH"
+
+# ─── Environment ──────────────────────────────────────────────────
+
+export EDITOR="${EDITOR:-nano}"
+export VISUAL="$EDITOR"
+export LANG="en_US.UTF-8"
+export LC_ALL="en_US.UTF-8"
+
+# ─── Shared Aliases & Functions ───────────────────────────────────
+
+[[ -f "$HOME/.aliases" ]]   && source "$HOME/.aliases"
+[[ -f "$HOME/.functions" ]] && source "$HOME/.functions"
+
+# ─── Prompt ───────────────────────────────────────────────────────
+
+# If Starship is installed, use it. Otherwise use a simple custom prompt.
+if command -v starship &>/dev/null; then
+    eval "$(starship init zsh)"
+else
+    # Simple but informative prompt: user@host:path (git branch)
+    autoload -Uz vcs_info
+    precmd() { vcs_info }
+    zstyle ':vcs_info:git:*' formats ' %F{magenta}(%b)%f'
+    setopt PROMPT_SUBST
+    PROMPT='%F{green}%n@%m%f:%F{blue}%~%f${vcs_info_msg_0_} %F{yellow}%#%f '
+fi
+
+# ─── Tool Integrations ───────────────────────────────────────────
+
+# fzf (fuzzy finder)
+if command -v fzf &>/dev/null; then
+    source <(fzf --zsh) 2>/dev/null || true
+fi
+
+# zoxide (smart cd)
+if command -v zoxide &>/dev/null; then
+    eval "$(zoxide init zsh)"
+fi
+
+# ─── SSH Agent ────────────────────────────────────────────────────
+
+# Auto-start ssh-agent if not running (Linux servers)
+if [[ "$(uname -s)" != "Darwin" ]] && [[ -z "${SSH_AUTH_SOCK:-}" ]]; then
+    eval "$(ssh-agent -s)" >/dev/null 2>&1
+fi
+
+# ─── Local Overrides ─────────────────────────────────────────────
+
+[[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
