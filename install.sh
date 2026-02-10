@@ -110,9 +110,28 @@ if [[ "$OS" == "Darwin" ]]; then
     echo ""
 fi
 
-# ─── Starship Prompt Config ──────────────────────────────────────
+# ─── Starship Prompt ─────────────────────────────────────────────
 
 echo -e "${BOLD}── Starship ──${NC}"
+
+if command -v starship &>/dev/null; then
+    info "Starship already installed"
+else
+    info "Installing Starship..."
+    if [[ "$OS" == "Darwin" ]] && command -v brew &>/dev/null; then
+        brew install starship
+        success "Installed Starship via Homebrew"
+    elif command -v curl &>/dev/null; then
+        mkdir -p "$HOME/.local/bin"
+        if curl -sS https://starship.rs/install.sh | sh -s -- --bin-dir "$HOME/.local/bin" -y; then
+            success "Installed Starship to ~/.local/bin"
+        else
+            warn "Starship installation failed — install manually: https://starship.rs"
+        fi
+    else
+        warn "Could not install Starship (curl not found) — install manually: https://starship.rs"
+    fi
+fi
 
 mkdir -p "$HOME/.config"
 backup_and_link "$DOTFILES_DIR/starship/starship.toml" "$HOME/.config/starship.toml"
