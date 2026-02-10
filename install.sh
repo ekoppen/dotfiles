@@ -110,6 +110,45 @@ if [[ "$OS" == "Darwin" ]]; then
     echo ""
 fi
 
+# ─── Nerd Font ───────────────────────────────────────────────────
+
+echo -e "${BOLD}── Nerd Font (JetBrainsMono) ──${NC}"
+
+if [[ "$OS" == "Darwin" ]]; then
+    if command -v brew &>/dev/null; then
+        if brew list --cask font-jetbrains-mono-nerd-font &>/dev/null 2>&1; then
+            info "JetBrainsMono Nerd Font already installed"
+        else
+            info "Installing JetBrainsMono Nerd Font via Homebrew..."
+            brew install --cask font-jetbrains-mono-nerd-font
+            success "Installed JetBrainsMono Nerd Font"
+        fi
+    else
+        warn "Homebrew not found — install JetBrainsMono Nerd Font manually: https://www.nerdfonts.com"
+    fi
+else
+    NERD_FONT_DIR="$HOME/.local/share/fonts/JetBrainsMonoNerdFont"
+    if ls "$NERD_FONT_DIR"/*.ttf &>/dev/null 2>&1; then
+        info "JetBrainsMono Nerd Font already installed"
+    elif command -v curl &>/dev/null && command -v unzip &>/dev/null; then
+        info "Downloading JetBrainsMono Nerd Font..."
+        NERD_FONT_ZIP="/tmp/JetBrainsMono-NerdFont.zip"
+        if curl -sL "https://github.com/ryanoasis/nerd-fonts/releases/latest/download/JetBrainsMono.zip" -o "$NERD_FONT_ZIP"; then
+            mkdir -p "$NERD_FONT_DIR"
+            unzip -qo "$NERD_FONT_ZIP" -d "$NERD_FONT_DIR"
+            rm -f "$NERD_FONT_ZIP"
+            fc-cache -f 2>/dev/null || true
+            success "Installed JetBrainsMono Nerd Font to $NERD_FONT_DIR"
+        else
+            warn "Font download failed — install manually: https://www.nerdfonts.com"
+        fi
+    else
+        warn "curl/unzip not found — install JetBrainsMono Nerd Font manually: https://www.nerdfonts.com"
+    fi
+fi
+
+echo ""
+
 # ─── Starship Prompt ─────────────────────────────────────────────
 
 echo -e "${BOLD}── Starship ──${NC}"
