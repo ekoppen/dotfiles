@@ -110,6 +110,55 @@ if [[ "$OS" == "Darwin" ]]; then
     echo ""
 fi
 
+# ─── Starship Prompt Config ──────────────────────────────────────
+
+echo -e "${BOLD}── Starship ──${NC}"
+
+mkdir -p "$HOME/.config"
+backup_and_link "$DOTFILES_DIR/starship/starship.toml" "$HOME/.config/starship.toml"
+
+echo ""
+
+# ─── Zsh Plugins ─────────────────────────────────────────────────
+
+if command -v zsh &>/dev/null; then
+    echo -e "${BOLD}── Zsh Plugins ──${NC}"
+
+    install_zsh_plugin() {
+        local name="$1"
+        local repo="$2"
+        local plugin_dir="$HOME/.zsh/$name"
+
+        # Check if already available system-wide
+        for check in \
+            "/opt/homebrew/share/$name/$name.zsh" \
+            "/usr/local/share/$name/$name.zsh" \
+            "/usr/share/$name/$name.zsh"; do
+            if [[ -f "$check" ]]; then
+                info "$name (system: $(dirname "$check"))"
+                return
+            fi
+        done
+
+        # Clone to ~/.zsh/ if not present
+        if [[ -d "$plugin_dir" ]]; then
+            info "$name already installed"
+        else
+            if command -v git &>/dev/null; then
+                git clone --depth 1 "$repo" "$plugin_dir" 2>/dev/null
+                success "Installed $name"
+            else
+                warn "git not found — skipping $name"
+            fi
+        fi
+    }
+
+    install_zsh_plugin "zsh-autosuggestions" "https://github.com/zsh-users/zsh-autosuggestions.git"
+    install_zsh_plugin "zsh-syntax-highlighting" "https://github.com/zsh-users/zsh-syntax-highlighting.git"
+
+    echo ""
+fi
+
 # ─── Create local override files if they don't exist ─────────────
 
 echo -e "${BOLD}── Local Overrides ──${NC}"

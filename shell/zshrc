@@ -78,7 +78,15 @@ else
     precmd() { vcs_info }
     zstyle ':vcs_info:git:*' formats ' %F{magenta}(%b)%f'
     setopt PROMPT_SUBST
-    PROMPT='%F{green}%n@%m%f:%F{blue}%~%f${vcs_info_msg_0_} %F{yellow}%#%f '
+
+    # SSH indicator — show [SSH] in red when connected remotely
+    if [[ -n "${SSH_CONNECTION:-}" ]]; then
+        _ssh_tag='%F{red}%B[SSH]%b%f '
+    else
+        _ssh_tag=''
+    fi
+
+    PROMPT='${_ssh_tag}%F{green}%n@%m%f:%F{blue}%~%f${vcs_info_msg_0_} %F{yellow}%#%f '
 fi
 
 # ─── Tool Integrations ───────────────────────────────────────────
@@ -93,6 +101,18 @@ if command -v zoxide &>/dev/null; then
     eval "$(zoxide init zsh)"
 fi
 
+# ─── Zsh Plugins ────────────────────────────────────────────────
+
+# zsh-autosuggestions (fish-like suggestions from history)
+for _f in \
+    /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh \
+    /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh \
+    /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh \
+    "$HOME/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh"; do
+    if [[ -f "$_f" ]]; then source "$_f"; break; fi
+done
+unset _f
+
 # ─── SSH Agent ────────────────────────────────────────────────────
 
 # Auto-start ssh-agent if not running (Linux servers)
@@ -103,3 +123,14 @@ fi
 # ─── Local Overrides ─────────────────────────────────────────────
 
 [[ -f "$HOME/.zshrc.local" ]] && source "$HOME/.zshrc.local"
+
+# ─── Syntax Highlighting (must be loaded last) ──────────────────
+
+for _f in \
+    /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh \
+    /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh \
+    /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh \
+    "$HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"; do
+    if [[ -f "$_f" ]]; then source "$_f"; break; fi
+done
+unset _f

@@ -1,0 +1,23 @@
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║  Starship Prompt  ·  Managed by dotfiles                       ║
+# ║                                                                 ║
+# ║  Reference: https://starship.rs/config/                         ║
+# ╚══════════════════════════════════════════════════════════════════╝
+
+# ─── SSH / Remote Indicator ─────────────────────────────────────
+#
+#  When connected via SSH, the prompt shows: user@🔗 hostname
+#  in bold red so you always know you're on a remote machine.
+#
+
+[hostname]
+ssh_only = true
+ssh_symbol = "🔗"
+format = "[$ssh_symbol $hostname]($style) "
+style = "bold red"
+
+[username]
+show_always = false
+format = "[$user]($style)@"
+style_user = "bold yellow"
+style_root = "bold red"
