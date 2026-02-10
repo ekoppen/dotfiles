@@ -22,7 +22,7 @@ style = "bold white"
 
 [hostname]
 ssh_only = true
-ssh_symbol = "🔗"
+ssh_symbol = "🌐"
 format = "[$ssh_symbol $hostname]($style) "
 style = "bold red"
 
