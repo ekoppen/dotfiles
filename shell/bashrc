@@ -61,8 +61,15 @@ else
         _ssh_tag=''
     fi
 
-    # Color prompt: [SSH] user@host:path (branch)$
-    PS1="${_ssh_tag}"'\[\033[0;32m\]\u@\h\[\033[0m\]:\[\033[0;34m\]\w\[\033[0;35m\]$(__git_branch)\[\033[0;33m\] \$\[\033[0m\] '
+    # OS icon (requires Nerd Font in terminal)
+    case "$(uname -s)" in
+        Darwin) _os_icon=$'\uf179 ' ;;
+        Linux)  _os_icon=$'\uf17c ' ;;
+        *)      _os_icon='' ;;
+    esac
+
+    # Color prompt: [SSH]  user@host:path (branch)$
+    PS1="${_ssh_tag}${_os_icon}"'\[\033[0;32m\]\u@\h\[\033[0m\]:\[\033[0;34m\]\w\[\033[0;35m\]$(__git_branch)\[\033[0;33m\] \$\[\033[0m\] '
 fi
 
 # ─── Completion ───────────────────────────────────────────────────

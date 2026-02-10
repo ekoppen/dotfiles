@@ -86,7 +86,14 @@ else
         _ssh_tag=''
     fi
 
-    PROMPT='${_ssh_tag}%F{green}%n@%m%f:%F{blue}%~%f${vcs_info_msg_0_} %F{yellow}%#%f '
+    # OS icon (requires Nerd Font in terminal)
+    case "$(uname -s)" in
+        Darwin) _os_icon=$'\uf179 ' ;;
+        Linux)  _os_icon=$'\uf17c ' ;;
+        *)      _os_icon='' ;;
+    esac
+
+    PROMPT='${_ssh_tag}${_os_icon}%F{green}%n@%m%f:%F{blue}%~%f${vcs_info_msg_0_} %F{yellow}%#%f '
 fi
 
 # ─── Tool Integrations ───────────────────────────────────────────
