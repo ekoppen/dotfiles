@@ -14,6 +14,17 @@
 disabled = false
 style = "bold white"
 
+[os.symbols]
+Macos = "\uf179 "
+Linux = "\uf17c "
+Ubuntu = "\uf31b "
+Debian = "\uf306 "
+Fedora = "\uf30a "
+Arch = "\uf303 "
+CentOS = "\uf304 "
+Raspbian = "\uf315 "
+Windows = "\uf17a "
+
 # ─── SSH / Remote Indicator ─────────────────────────────────────
 #
 #  When connected via SSH, the prompt shows: user@🔗 hostname
