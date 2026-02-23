@@ -70,6 +70,14 @@ alias gca="git commit -a"
 alias gco="git checkout"
 alias gb="git branch"
 
+# ─── Tmux ───────────────────────────────────────────────────────
+
+alias t="tmux"
+alias ta="tmux attach -t"
+alias tl="tmux list-sessions"
+alias tn="tmux new-session -s"
+alias tk="tmux kill-session -t"
+
 # ─── SSH ──────────────────────────────────────────────────────────
 
 alias sshconfig="$EDITOR ~/.ssh/config.d/"

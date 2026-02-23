@@ -12,6 +12,7 @@ Managed with symlinks — one repo, all machines in sync.
 | Zsh | `~/.zshrc` | Zsh shell configuration |
 | Bash | `~/.bashrc`, `~/.bash_profile` | Bash shell configuration |
 | SSH | `~/.ssh/config` | SSH hosts and settings |
+| Tmux | `~/.tmux.conf` | Terminal multiplexer (sessions, splits, Catppuccin theme) |
 | Git | `~/.gitconfig` | Git identity and preferences |
 
 ## Quick Start
@@ -39,6 +40,7 @@ Drop local overrides (that you don't want in git) in:
 - `~/.bashrc.local` — sourced at end of `.bashrc`
 - `~/.ssh/config.d/local` — included by main SSH config
 - `~/.gitconfig.local` — included by main `.gitconfig`
+- `~/.tmux.conf.local` — sourced at end of `.tmux.conf`
 
 These files are gitignored so they stay on the machine where you create them.
 

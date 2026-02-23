@@ -177,6 +177,58 @@ backup_and_link "$DOTFILES_DIR/starship/starship.toml" "$HOME/.config/starship.t
 
 echo ""
 
+# ─── Tmux ───────────────────────────────────────────────────────
+
+echo -e "${BOLD}── Tmux ──${NC}"
+
+if command -v tmux &>/dev/null; then
+    info "tmux already installed ($(tmux -V))"
+else
+    info "Installing tmux..."
+    if [[ "$OS" == "Darwin" ]] && command -v brew &>/dev/null; then
+        brew install tmux
+        success "Installed tmux via Homebrew"
+    elif command -v apt-get &>/dev/null; then
+        sudo apt-get update -qq && sudo apt-get install -y tmux xclip
+        success "Installed tmux + xclip via apt"
+    elif command -v dnf &>/dev/null; then
+        sudo dnf install -y tmux xclip
+        success "Installed tmux + xclip via dnf"
+    else
+        warn "Could not install tmux — install manually"
+    fi
+fi
+
+backup_and_link "$DOTFILES_DIR/tmux/tmux.conf" "$HOME/.tmux.conf"
+
+echo ""
+
+# ─── TPM (Tmux Plugin Manager) ─────────────────────────────────
+
+echo -e "${BOLD}── TPM (Tmux Plugin Manager) ──${NC}"
+
+TPM_DIR="$HOME/.tmux/plugins/tpm"
+
+if [[ -d "$TPM_DIR" ]]; then
+    info "TPM already installed"
+else
+    if command -v git &>/dev/null; then
+        git clone --depth 1 https://github.com/tmux-plugins/tpm "$TPM_DIR" 2>/dev/null
+        success "Installed TPM"
+    else
+        warn "git not found — skipping TPM installation"
+    fi
+fi
+
+# Auto-install plugins (headless, no tmux server needed)
+if command -v tmux &>/dev/null && [[ -x "$TPM_DIR/bin/install_plugins" ]]; then
+    info "Installing tmux plugins..."
+    "$TPM_DIR/bin/install_plugins" >/dev/null 2>&1
+    success "Tmux plugins installed"
+fi
+
+echo ""
+
 # ─── Zsh Plugins ─────────────────────────────────────────────────
 
 if command -v zsh &>/dev/null; then
@@ -237,6 +289,7 @@ create_local_if_missing() {
 create_local_if_missing "$HOME/.zshrc.local"    "# Local zsh overrides (not tracked by git)"
 create_local_if_missing "$HOME/.bashrc.local"   "# Local bash overrides (not tracked by git)"
 create_local_if_missing "$HOME/.gitconfig.local" "# Local git overrides (not tracked by git)"
+create_local_if_missing "$HOME/.tmux.conf.local"  "# Local tmux overrides (not tracked by git)"
 
 if [[ ! -f "$HOME/.ssh/config.d/local" ]]; then
     touch "$HOME/.ssh/config.d/local"

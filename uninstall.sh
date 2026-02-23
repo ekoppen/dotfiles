@@ -34,6 +34,7 @@ TARGETS=(
     "$HOME/.ssh/config.d/00-defaults"
     "$HOME/.ssh/config.d/homelab"
     "$HOME/.config/alacritty/alacritty.toml"
+    "$HOME/.tmux.conf"
 )
 
 for target in "${TARGETS[@]}"; do
@@ -65,6 +66,7 @@ if [[ -d "$BACKUP_BASE" ]]; then
                 gitignore_global) cp "$file" "$HOME/.gitignore_global" ;;
                 config)         cp "$file" "$HOME/.ssh/config" ;;
                 alacritty.toml) cp "$file" "$HOME/.config/alacritty/alacritty.toml" ;;
+                tmux.conf)      cp "$file" "$HOME/.tmux.conf" ;;
             esac
             info "Restored $filename"
         done
