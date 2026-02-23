@@ -120,8 +120,11 @@ if [[ "$OS" == "Darwin" ]]; then
             info "JetBrainsMono Nerd Font already installed"
         else
             info "Installing JetBrainsMono Nerd Font via Homebrew..."
-            brew install --cask font-jetbrains-mono-nerd-font
-            success "Installed JetBrainsMono Nerd Font"
+            if brew install --cask font-jetbrains-mono-nerd-font 2>/dev/null; then
+                success "Installed JetBrainsMono Nerd Font"
+            else
+                warn "Font already exists or install failed — skipping"
+            fi
         fi
     else
         warn "Homebrew not found — install JetBrainsMono Nerd Font manually: https://www.nerdfonts.com"
