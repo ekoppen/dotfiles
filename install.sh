@@ -229,6 +229,31 @@ fi
 
 echo ""
 
+# ─── xbar + Mac-Mux (macOS only) ───────────────────────────────
+
+if [[ "$OS" == "Darwin" ]]; then
+    echo -e "${BOLD}── xbar (Mac-Mux) ──${NC}"
+
+    if command -v brew &>/dev/null; then
+        if brew list --cask xbar &>/dev/null 2>&1; then
+            info "xbar already installed"
+        else
+            info "Installing xbar..."
+            brew install --cask xbar
+            success "Installed xbar"
+        fi
+    else
+        warn "Homebrew not found — install xbar manually: https://xbarapp.com"
+    fi
+
+    # Symlink Mac-Mux plugin into xbar plugins directory
+    XBAR_PLUGINS="$HOME/Library/Application Support/xbar/plugins"
+    mkdir -p "$XBAR_PLUGINS"
+    backup_and_link "$DOTFILES_DIR/tmux/mac-mux.10s.sh" "$XBAR_PLUGINS/mac-mux.10s.sh"
+
+    echo ""
+fi
+
 # ─── Zsh Plugins ─────────────────────────────────────────────────
 
 if command -v zsh &>/dev/null; then
