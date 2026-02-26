@@ -1,0 +1,109 @@
+# ╔══════════════════════════════════════════════════════════════════════════════╗
+# ║                         Ghostty Configuration                              ║
+# ║                                                                            ║
+# ║  Catppuccin Mocha theme · JetBrainsMono Nerd Font · macOS optimized        ║
+# ║  Mirrors Alacritty config for consistent terminal experience               ║
+# ║                                                                            ║
+# ║  Place this file at: ~/.config/ghostty/config                              ║
+# ╚══════════════════════════════════════════════════════════════════════════════╝
+
+# ─── Font ────────────────────────────────────────────────────────────────────
+
+font-family = JetBrainsMono Nerd Font
+font-family-bold = JetBrainsMono Nerd Font Bold
+font-family-italic = JetBrainsMono Nerd Font Italic
+font-family-bold-italic = JetBrainsMono Nerd Font Bold Italic
+font-size = 21
+font-thicken = true
+
+# Line spacing adjustment (matches Alacritty font.offset.y = 1)
+adjust-cell-height = 1
+
+# ─── Window ──────────────────────────────────────────────────────────────────
+
+# Clean minimal look — hidden titlebar matches Alacritty "Buttonless"
+macos-titlebar-style = hidden
+window-padding-x = 14
+window-padding-y = 14
+window-save-state = always
+
+# Initial window size (matches Alacritty 140x40)
+window-width = 140
+window-height = 40
+
+# ─── macOS ───────────────────────────────────────────────────────────────────
+
+# Essential: use Option as Alt key for terminal shortcuts
+macos-option-as-alt = true
+
+# ─── Appearance ──────────────────────────────────────────────────────────────
+
+# Catppuccin Mocha — built-in theme (matches Alacritty color scheme exactly)
+theme = Catppuccin Mocha
+
+# Background — solid with blur effect
+background-opacity = 1
+background-blur-radius = 20
+
+# ─── Cursor ──────────────────────────────────────────────────────────────────
+
+cursor-style = bar
+cursor-style-blink = true
+
+# Cursor colors (Catppuccin Rosewater on Base)
+cursor-color = #f5e0dc
+cursor-text = #1e1e2e
+
+# ─── Behavior ────────────────────────────────────────────────────────────────
+
+# Scrollback — extra room for long server sessions & log tailing
+scrollback-limit = 50000
+
+# Clipboard — auto-copy selection (matches Alacritty save_to_clipboard)
+copy-on-select = clipboard
+clipboard-read = allow
+clipboard-write = allow
+
+# Selection colors (Catppuccin Rosewater on Base)
+selection-background = #f5e0dc
+selection-foreground = #1e1e2e
+
+# Don't ask to confirm when closing a pane
+confirm-close-surface = false
+
+# Mouse
+mouse-hide-while-typing = false
+
+# Shell integration — Ghostty can show marks in scrollback
+shell-integration = detect
+
+# ─── Terminal ────────────────────────────────────────────────────────────────
+
+# Best SSH compatibility — avoids "unknown terminal" on remote hosts
+# Change to "xterm-ghostty" if you install ghostty terminfo on your servers
+term = xterm-256color
+
+# ─── Keybindings ─────────────────────────────────────────────────────────────
+#
+#  macOS Navigation (like Terminal.app / iTerm2)
+#
+
+# Cmd+Left/Right = begin/end of line
+keybind = cmd+left=text:\x01
+keybind = cmd+right=text:\x05
+
+# Cmd+Backspace = delete entire line (Ctrl+U)
+keybind = cmd+backspace=text:\x15
+
+# Opt+Backspace = delete word left (Ctrl+W)
+keybind = alt+backspace=text:\x17
+
+# Opt+Delete = delete word right (Alt+D)
+keybind = alt+delete=text:\x1bd
+
+# Opt+Left/Right = jump word by word
+keybind = alt+left=text:\x1bb
+keybind = alt+right=text:\x1bf
+
+# Cmd+K = clear scrollback
+keybind = cmd+k=clear_screen

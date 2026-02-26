@@ -27,7 +27,7 @@ decorations = "Buttonless"     # Clean minimal look (macOS: no title bar buttons
 #decorations = "None"          # Even more minimal: no title bar at all
 dynamic_padding = true         # Center content when window doesn't fit exact cells
 dynamic_title = true           # Window title reflects running program
-opacity = 0.92                 # Subtle transparency — lets your wallpaper breathe
+opacity = 1                 # Subtle transparency — lets your wallpaper breathe
 blur = true                    # Frosted glass effect (macOS Monterey+)
 option_as_alt = "Both"         # Use Option as Alt key (essential for macOS)
 startup_mode = "Windowed"      # Options: Windowed, Maximized, Fullscreen
@@ -60,7 +60,7 @@ multiplier = 3                 # Scroll speed multiplier
 #
 
 [font]
-size = 22.0                    # Adjust to your display & preference
+size = 21.0                    # Adjust to your display & preference
 builtin_box_drawing = true     # Use built-in box drawing characters
 
   [font.normal]
@@ -179,7 +179,7 @@ persist = false
 #
 
 [mouse]
-hide_when_typing = true            # Cursor verdwijnt tijdens typen
+hide_when_typing = false            # Cursor verdwijnt tijdens typen
 
 # ─── Keyboard ─────────────────────────────────────────────────────────────────
 

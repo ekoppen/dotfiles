@@ -99,13 +99,20 @@ chmod 600 "$HOME/.ssh/config.d/"* 2>/dev/null || true
 
 echo ""
 
-# ─── Alacritty (macOS only) ──────────────────────────────────────
+# ─── Terminal Emulators (macOS only) ─────────────────────────────
 
 if [[ "$OS" == "Darwin" ]]; then
     echo -e "${BOLD}── Alacritty (macOS) ──${NC}"
 
     mkdir -p "$HOME/.config/alacritty"
     backup_and_link "$DOTFILES_DIR/alacritty/alacritty.toml" "$HOME/.config/alacritty/alacritty.toml"
+
+    echo ""
+
+    echo -e "${BOLD}── Ghostty (macOS) ──${NC}"
+
+    mkdir -p "$HOME/.config/ghostty"
+    backup_and_link "$DOTFILES_DIR/ghostty/config" "$HOME/.config/ghostty/config"
 
     echo ""
 fi
@@ -256,6 +263,17 @@ if [[ "$OS" == "Darwin" ]]; then
 
     echo ""
 fi
+
+# ─── Claude Code ─────────────────────────────────────────────────
+
+echo -e "${BOLD}── Claude Code ──${NC}"
+
+mkdir -p "$HOME/.claude"
+backup_and_link "$DOTFILES_DIR/claude/settings.json" "$HOME/.claude/settings.json"
+backup_and_link "$DOTFILES_DIR/claude/statusline.sh" "$HOME/.claude/statusline.sh"
+chmod +x "$HOME/.claude/statusline.sh"
+
+echo ""
 
 # ─── Zsh Plugins ─────────────────────────────────────────────────
 
