@@ -187,6 +187,111 @@ backup_and_link "$DOTFILES_DIR/starship/starship.toml" "$HOME/.config/starship.t
 
 echo ""
 
+# ─── fzf + companions ───────────────────────────────────────────
+
+echo -e "${BOLD}── fzf (Fuzzy Finder) ──${NC}"
+
+if command -v fzf &>/dev/null; then
+    info "fzf already installed ($(fzf --version | awk '{print $1}'))"
+else
+    info "Installing fzf..."
+    if [[ "$OS" == "Darwin" ]] && command -v brew &>/dev/null; then
+        brew install fzf
+        success "Installed fzf via Homebrew"
+    elif command -v apt-get &>/dev/null; then
+        sudo apt-get update -qq && sudo apt-get install -y fzf
+        success "Installed fzf via apt"
+    elif command -v dnf &>/dev/null; then
+        sudo dnf install -y fzf
+        success "Installed fzf via dnf"
+    else
+        warn "Could not install fzf — install manually: https://github.com/junegunn/fzf"
+    fi
+fi
+
+# fd — fast find alternative (used by fzf for file/dir searching)
+if command -v fd &>/dev/null || command -v fdfind &>/dev/null; then
+    info "fd already installed"
+else
+    info "Installing fd (fast find, used by fzf)..."
+    if [[ "$OS" == "Darwin" ]] && command -v brew &>/dev/null; then
+        brew install fd
+        success "Installed fd via Homebrew"
+    elif command -v apt-get &>/dev/null; then
+        sudo apt-get install -y fd-find
+        success "Installed fd via apt"
+    elif command -v dnf &>/dev/null; then
+        sudo dnf install -y fd-find
+        success "Installed fd via dnf"
+    else
+        warn "Could not install fd — install manually: https://github.com/sharkdp/fd"
+    fi
+fi
+
+# bat — syntax-highlighted cat (used by fzf for file preview)
+if command -v bat &>/dev/null || command -v batcat &>/dev/null; then
+    info "bat already installed"
+else
+    info "Installing bat (syntax-highlighted preview, used by fzf)..."
+    if [[ "$OS" == "Darwin" ]] && command -v brew &>/dev/null; then
+        brew install bat
+        success "Installed bat via Homebrew"
+    elif command -v apt-get &>/dev/null; then
+        sudo apt-get install -y bat
+        success "Installed bat via apt"
+    elif command -v dnf &>/dev/null; then
+        sudo dnf install -y bat
+        success "Installed bat via dnf"
+    else
+        warn "Could not install bat — install manually: https://github.com/sharkdp/bat"
+    fi
+fi
+
+echo ""
+
+# ─── tldr (tealdeer) ───────────────────────────────────────────
+
+echo -e "${BOLD}── tldr (tealdeer) ──${NC}"
+
+if command -v tldr &>/dev/null; then
+    info "tldr already installed"
+else
+    info "Installing tealdeer (fast tldr client)..."
+    if [[ "$OS" == "Darwin" ]] && command -v brew &>/dev/null; then
+        brew install tealdeer
+        success "Installed tealdeer via Homebrew"
+    elif command -v apt-get &>/dev/null; then
+        sudo apt-get update -qq && sudo apt-get install -y tealdeer
+        success "Installed tealdeer via apt"
+    elif command -v dnf &>/dev/null; then
+        sudo dnf install -y tealdeer
+        success "Installed tealdeer via dnf"
+    else
+        warn "Could not install tealdeer — install manually: https://github.com/dbrgn/tealdeer"
+    fi
+fi
+
+# Symlink custom tldr pages for personal setup hints
+if command -v tldr &>/dev/null; then
+    if [[ "$OS" == "Darwin" ]]; then
+        TLDR_CUSTOM_DIR="$HOME/Library/Application Support/tealdeer/pages"
+    else
+        TLDR_CUSTOM_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/tealdeer/pages"
+    fi
+    mkdir -p "$TLDR_CUSTOM_DIR"
+    for page in "$DOTFILES_DIR"/tldr/pages/*.page.md; do
+        [[ -f "$page" ]] || continue
+        backup_and_link "$page" "$TLDR_CUSTOM_DIR/$(basename "$page")"
+    done
+    # Update tldr cache if empty
+    if ! tldr --list &>/dev/null 2>&1; then
+        info "Updating tldr cache..."
+        tldr --update >/dev/null 2>&1 && success "tldr cache updated" || true
+    fi
+fi
+
+echo ""
+
 # ─── Tmux ───────────────────────────────────────────────────────
 
 echo -e "${BOLD}── Tmux ──${NC}"

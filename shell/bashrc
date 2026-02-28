@@ -92,6 +92,42 @@ fi
 
 # fzf (fuzzy finder)
 if command -v fzf &>/dev/null; then
+    # Catppuccin Mocha colors (matches tmux/Ghostty theme)
+    export FZF_DEFAULT_OPTS=" \
+        --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
+        --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
+        --color=marker:#b4befe,fg+:#cdd6f4,prompt:#cba6f7,hl+:#f38ba8 \
+        --color=selected-bg:#45475a \
+        --height=40% --layout=reverse --border=rounded --margin=0,1"
+
+    # Use fd for faster file finding (respects .gitignore)
+    if command -v fd &>/dev/null; then
+        export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+        export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+        export FZF_ALT_C_COMMAND='fd --type d --hidden --follow --exclude .git'
+    elif command -v fdfind &>/dev/null; then
+        export FZF_DEFAULT_COMMAND='fdfind --type f --hidden --follow --exclude .git'
+        export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+        export FZF_ALT_C_COMMAND='fdfind --type d --hidden --follow --exclude .git'
+    fi
+
+    # File preview with bat (Ctrl+T)
+    if command -v bat &>/dev/null; then
+        export FZF_CTRL_T_OPTS="--preview 'bat --color=always --style=numbers --line-range=:300 {}'"
+    elif command -v batcat &>/dev/null; then
+        export FZF_CTRL_T_OPTS="--preview 'batcat --color=always --style=numbers --line-range=:300 {}'"
+    fi
+
+    # Directory preview (Alt+C)
+    if command -v eza &>/dev/null; then
+        export FZF_ALT_C_OPTS="--preview 'eza --tree --level=2 --icons --color=always {}'"
+    else
+        export FZF_ALT_C_OPTS="--preview 'ls -la --color=always {}'"
+    fi
+
+    # History search with preview (Ctrl+R)
+    export FZF_CTRL_R_OPTS="--preview 'echo {}' --preview-window=up:3:wrap"
+
     eval "$(fzf --bash)" 2>/dev/null || true
 fi
 

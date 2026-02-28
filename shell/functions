@@ -96,3 +96,33 @@ killnamed() {
 bak() {
     cp "$1" "$1.bak.$(date +%Y%m%d_%H%M%S)"
 }
+
+# ─── fzf-powered functions (require fzf) ───────────────────────
+
+# Fuzzy find and edit a file
+fe() {
+    command -v fzf &>/dev/null || { echo "fzf not installed"; return 1; }
+    local file
+    file=$(fzf --preview 'bat --color=always --style=numbers --line-range=:300 {} 2>/dev/null || cat {}') &&
+        ${EDITOR:-nano} "$file"
+}
+
+# Fuzzy process kill
+fkill() {
+    command -v fzf &>/dev/null || { echo "fzf not installed"; return 1; }
+    local pid
+    pid=$(ps -ef | sed 1d | fzf --multi --header="Select process(es) to kill" | awk '{print $2}')
+    if [[ -n "$pid" ]]; then
+        echo "$pid" | xargs kill -"${1:-9}"
+    fi
+}
+
+# Fuzzy git branch checkout
+fbr() {
+    command -v fzf &>/dev/null || { echo "fzf not installed"; return 1; }
+    local branch
+    branch=$(git branch --all --color=always | grep -v HEAD |
+        fzf --ansi --preview 'git log --oneline --graph --decorate --color=always $(echo {} | sed "s/.* //" | sed "s#remotes/[^/]*/##") -- | head -20' |
+        sed 's/.* //' | sed 's#remotes/[^/]*/##')
+    [[ -n "$branch" ]] && git checkout "$branch"
+}
