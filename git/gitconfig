@@ -17,10 +17,26 @@
     editor = nano
     autocrlf = input
     excludesFile = ~/.gitignore_global
-    pager = less -FRX
+    # Use delta for syntax-highlighted diffs (falls back to less if not installed)
+    pager = delta --dark 2>/dev/null || less -FRX
 
 [color]
     ui = auto
+
+[delta]
+    navigate = true
+    side-by-side = true
+    line-numbers = true
+    # Catppuccin Mocha theme
+    minus-style = "syntax #53394c"
+    minus-emph-style = "syntax #6b3a50"
+    plus-style = "syntax #394634"
+    plus-emph-style = "syntax #4a6b3a"
+    line-numbers-minus-style = "#f38ba8"
+    line-numbers-plus-style = "#a6e3a1"
+    line-numbers-zero-style = "#6c7086"
+    hunk-header-style = "syntax bold"
+    hunk-header-decoration-style = "#89b4fa ul"
 
 [pull]
     rebase = true
@@ -34,6 +50,9 @@
 
 [merge]
     conflictStyle = diff3
+
+[interactive]
+    diffFilter = delta --color-only 2>/dev/null || cat
 
 [diff]
     colorMoved = default

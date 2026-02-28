@@ -62,6 +62,21 @@ echo -e "   OS detected: ${BOLD}$OS${NC}"
 echo -e "   Source:       ${BOLD}$DOTFILES_DIR${NC}"
 echo ""
 
+# ─── Brewfile (macOS) ───────────────────────────────────────────
+
+if [[ "$OS" == "Darwin" ]] && command -v brew &>/dev/null; then
+    echo -e "${BOLD}── Homebrew Bundle ──${NC}"
+    if [[ -f "$DOTFILES_DIR/Brewfile" ]]; then
+        info "Installing packages from Brewfile..."
+        if brew bundle --file="$DOTFILES_DIR/Brewfile" 2>/dev/null; then
+            success "All Homebrew packages installed"
+        else
+            warn "Some packages may have failed — check output above"
+        fi
+    fi
+    echo ""
+fi
+
 # ─── Shell Configs ────────────────────────────────────────────────
 
 echo -e "${BOLD}── Shell ──${NC}"
@@ -244,6 +259,78 @@ else
         success "Installed bat via dnf"
     else
         warn "Could not install bat — install manually: https://github.com/sharkdp/bat"
+    fi
+fi
+
+echo ""
+
+# ─── ripgrep ────────────────────────────────────────────────────
+
+echo -e "${BOLD}── ripgrep ──${NC}"
+
+if command -v rg &>/dev/null; then
+    info "ripgrep already installed ($(rg --version | head -1 | awk '{print $2}'))"
+else
+    info "Installing ripgrep..."
+    if [[ "$OS" == "Darwin" ]] && command -v brew &>/dev/null; then
+        brew install ripgrep
+        success "Installed ripgrep via Homebrew"
+    elif command -v apt-get &>/dev/null; then
+        sudo apt-get update -qq && sudo apt-get install -y ripgrep
+        success "Installed ripgrep via apt"
+    elif command -v dnf &>/dev/null; then
+        sudo dnf install -y ripgrep
+        success "Installed ripgrep via dnf"
+    else
+        warn "Could not install ripgrep — install manually: https://github.com/BurntSushi/ripgrep"
+    fi
+fi
+
+echo ""
+
+# ─── zoxide ─────────────────────────────────────────────────────
+
+echo -e "${BOLD}── zoxide ──${NC}"
+
+if command -v zoxide &>/dev/null; then
+    info "zoxide already installed"
+else
+    info "Installing zoxide (smart cd)..."
+    if [[ "$OS" == "Darwin" ]] && command -v brew &>/dev/null; then
+        brew install zoxide
+        success "Installed zoxide via Homebrew"
+    elif command -v apt-get &>/dev/null; then
+        sudo apt-get update -qq && sudo apt-get install -y zoxide
+        success "Installed zoxide via apt"
+    elif command -v dnf &>/dev/null; then
+        sudo dnf install -y zoxide
+        success "Installed zoxide via dnf"
+    else
+        warn "Could not install zoxide — install manually: https://github.com/ajeetdsouza/zoxide"
+    fi
+fi
+
+echo ""
+
+# ─── delta (git pager) ─────────────────────────────────────────
+
+echo -e "${BOLD}── delta ──${NC}"
+
+if command -v delta &>/dev/null; then
+    info "delta already installed"
+else
+    info "Installing delta (syntax-highlighted git diffs)..."
+    if [[ "$OS" == "Darwin" ]] && command -v brew &>/dev/null; then
+        brew install git-delta
+        success "Installed delta via Homebrew"
+    elif command -v apt-get &>/dev/null; then
+        sudo apt-get update -qq && sudo apt-get install -y git-delta
+        success "Installed delta via apt"
+    elif command -v dnf &>/dev/null; then
+        sudo dnf install -y git-delta
+        success "Installed delta via dnf"
+    else
+        warn "Could not install delta — install manually: https://github.com/dandavison/delta"
     fi
 fi
 
