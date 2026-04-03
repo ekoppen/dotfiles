@@ -214,21 +214,23 @@ if [[ "$PROFILE" == "workstation" ]] && [[ "$INTERACTIVE" != "1" ]]; then
         echo -e "${BOLD}── Terminal Emulator ──${NC}"
         echo ""
         echo -e "  ${BOLD}1)${NC} Ghostty     — native, fast, modern"
-        echo -e "  ${BOLD}2)${NC} Alacritty   — GPU-accelerated, cross-platform"
-        echo -e "  ${BOLD}3)${NC} Both"
-        echo -e "  ${BOLD}4)${NC} Skip        — don't configure a terminal"
+        echo -e "  ${BOLD}2)${NC} iTerm2      — feature-rich macOS terminal"
+        echo -e "  ${BOLD}3)${NC} Alacritty   — GPU-accelerated, cross-platform"
+        echo -e "  ${BOLD}4)${NC} All         — install all available terminals"
+        echo -e "  ${BOLD}5)${NC} Skip        — don't install a terminal"
         echo ""
-        TERM_CHOICE="$(ask "Select terminal [1-4]:" "1")"
+        TERM_CHOICE="$(ask "Select terminal [1-5]:" "1")"
         case "$TERM_CHOICE" in
             1|ghostty|Ghostty)     TERMINAL="ghostty" ;;
-            2|alacritty|Alacritty) TERMINAL="alacritty" ;;
-            3|both|Both)           TERMINAL="both" ;;
+            2|iterm|iterm2|iTerm2) TERMINAL="iterm2" ;;
+            3|alacritty|Alacritty) TERMINAL="alacritty" ;;
+            4|all|All)             TERMINAL="all" ;;
             *)                     TERMINAL="skip" ;;
         esac
         echo ""
     fi
 elif [[ "$INTERACTIVE" == "1" ]]; then
-    TERMINAL="${TERMINAL:-both}"
+    TERMINAL="${TERMINAL:-all}"
 fi
 
 # ─── Core CLI Tools (if not already via Brewfile) ────────────────
@@ -316,17 +318,75 @@ chmod 600 "$HOME/.ssh/config.d/"* 2>/dev/null || true
 
 echo ""
 
-# ─── Terminal Emulator Configs ──────────────────────────────────
+# ─── Terminal Emulator Install & Config ─────────────────────────
 
-if [[ "$TERMINAL" == "ghostty" || "$TERMINAL" == "both" ]]; then
+if [[ "$TERMINAL" == "ghostty" || "$TERMINAL" == "all" ]]; then
     echo -e "${BOLD}── Ghostty ──${NC}"
+
+    # Install Ghostty if not present
+    if command -v ghostty &>/dev/null || [[ -d "/Applications/Ghostty.app" ]]; then
+        info "Ghostty already installed"
+    elif [[ "$OS" == "Darwin" ]] && command -v brew &>/dev/null; then
+        info "Installing Ghostty..."
+        brew install --cask ghostty 2>/dev/null && \
+            success "Installed Ghostty via Homebrew" || \
+            warn "Ghostty install failed — install manually: https://ghostty.org"
+    else
+        warn "Ghostty not found — install manually: https://ghostty.org"
+    fi
+
+    # Link config
     mkdir -p "$HOME/.config/ghostty"
     backup_and_link "$DOTFILES_DIR/config/ghostty/config" "$HOME/.config/ghostty/config"
     echo ""
 fi
 
-if [[ "$TERMINAL" == "alacritty" || "$TERMINAL" == "both" ]]; then
+if [[ "$TERMINAL" == "iterm2" || "$TERMINAL" == "all" ]]; then
+    echo -e "${BOLD}── iTerm2 ──${NC}"
+
+    # Install iTerm2 if not present (macOS only)
+    if [[ -d "/Applications/iTerm.app" ]]; then
+        info "iTerm2 already installed"
+    elif [[ "$OS" == "Darwin" ]] && command -v brew &>/dev/null; then
+        info "Installing iTerm2..."
+        brew install --cask iterm2 2>/dev/null && \
+            success "Installed iTerm2 via Homebrew" || \
+            warn "iTerm2 install failed — install manually: https://iterm2.com"
+    elif [[ "$OS" == "Darwin" ]]; then
+        warn "iTerm2 not found — install via Homebrew or https://iterm2.com"
+    else
+        info "iTerm2 is macOS only — skipping on Linux"
+    fi
+
+    echo ""
+fi
+
+if [[ "$TERMINAL" == "alacritty" || "$TERMINAL" == "all" ]]; then
     echo -e "${BOLD}── Alacritty ──${NC}"
+
+    # Install Alacritty if not present
+    if command -v alacritty &>/dev/null || [[ -d "/Applications/Alacritty.app" ]]; then
+        info "Alacritty already installed"
+    elif [[ "$OS" == "Darwin" ]] && command -v brew &>/dev/null; then
+        info "Installing Alacritty..."
+        brew install --cask alacritty 2>/dev/null && \
+            success "Installed Alacritty via Homebrew" || \
+            warn "Alacritty install failed — install manually: https://alacritty.org"
+    elif command -v apt-get &>/dev/null; then
+        info "Installing Alacritty..."
+        sudo apt-get install -y alacritty -qq 2>/dev/null && \
+            success "Installed Alacritty via apt" || \
+            warn "Alacritty install failed — install manually: https://alacritty.org"
+    elif command -v dnf &>/dev/null; then
+        info "Installing Alacritty..."
+        sudo dnf install -y alacritty -q 2>/dev/null && \
+            success "Installed Alacritty via dnf" || \
+            warn "Alacritty install failed — install manually: https://alacritty.org"
+    else
+        warn "Alacritty not found — install manually: https://alacritty.org"
+    fi
+
+    # Link config
     mkdir -p "$HOME/.config/alacritty"
     if [[ "$OS" == "Darwin" ]]; then
         backup_and_link "$DOTFILES_DIR/config/alacritty/alacritty.toml" "$HOME/.config/alacritty/alacritty.toml"

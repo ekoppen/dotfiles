@@ -28,7 +28,7 @@ The installer asks which profile to use:
 | CLI tools (fzf, ripgrep, bat, fd, eza, zoxide, delta, tldr) | ✔ | ✔ |
 | Nerd Font (JetBrainsMono) | ✔ | ✔ |
 | Zsh plugins (autosuggestions, syntax-highlighting) | ✔ | ✔ |
-| Terminal emulator (Ghostty / Alacritty) | ✔ | — |
+| Terminal emulator (Ghostty / iTerm2 / Alacritty) | ✔ | — |
 | xbar (Mac-Mux tmux menu) | ✔ (macOS) | — |
 | Homebrew | ✔ | — |
 | Nano config | — | ✔ (Linux) |
