@@ -1,74 +1,134 @@
-# 🏠 Dotfiles
+# Dotfiles
 
-Personal configuration files for macOS and Linux systems.
-
-Managed with symlinks — one repo, all machines in sync.
-
-## What's Included
-
-| Config | Path | Description |
-|--------|------|-------------|
-| Alacritty | `~/.config/alacritty/` | Terminal emulator (macOS only) |
-| Zsh | `~/.zshrc` | Zsh shell configuration |
-| Bash | `~/.bashrc`, `~/.bash_profile` | Bash shell configuration |
-| SSH | `~/.ssh/config` | SSH hosts and settings |
-| Tmux | `~/.tmux.conf` | Terminal multiplexer (sessions, splits, Catppuccin theme) |
-| Git | `~/.gitconfig` | Git identity and preferences |
+Personal dotfiles for macOS and Linux — managed with symlinks, one repo for all machines.
 
 ## Quick Start
 
 ```bash
-# Clone the repo
-git clone git@github.com:YOUR_USERNAME/dotfiles.git ~/.dotfiles
-
-# Run the installer
-cd ~/.dotfiles
-chmod +x install.sh
-./install.sh
+git clone git@github.com:ekoppen/dotfiles.git ~/.dotfiles
+cd ~/.dotfiles && ./install.sh
 ```
 
-The installer will:
-1. Detect your OS (macOS or Linux)
-2. Back up any existing configs to `~/.dotfiles-backup/`
-3. Create symlinks from the repo to the expected locations
-4. Install only what's relevant for the current system
+Or as a one-liner:
 
-## Per-Machine Overrides
+```bash
+bash <(curl -sL https://raw.githubusercontent.com/ekoppen/dotfiles/main/install.sh)
+```
 
-Drop local overrides (that you don't want in git) in:
-- `~/.zshrc.local` — sourced at end of `.zshrc`
-- `~/.bashrc.local` — sourced at end of `.bashrc`
-- `~/.ssh/config.d/local` — included by main SSH config
-- `~/.gitconfig.local` — included by main `.gitconfig`
-- `~/.tmux.conf.local` — sourced at end of `.tmux.conf`
+## Profiles
 
-These files are gitignored so they stay on the machine where you create them.
+The installer asks which profile to use:
 
-## SSH Config
+| | Workstation | Server |
+|---|---|---|
+| Shell (zsh + bash) | ✔ | ✔ |
+| Git, SSH configs | ✔ | ✔ |
+| Starship prompt | ✔ | ✔ |
+| tmux + plugins | ✔ | ✔ |
+| CLI tools (fzf, ripgrep, bat, fd, eza, zoxide, delta, tldr) | ✔ | ✔ |
+| Nerd Font (JetBrainsMono) | ✔ | ✔ |
+| Zsh plugins (autosuggestions, syntax-highlighting) | ✔ | ✔ |
+| Terminal emulator (Ghostty / Alacritty) | ✔ | — |
+| xbar (Mac-Mux tmux menu) | ✔ (macOS) | — |
+| Homebrew | ✔ | — |
+| Nano config | — | ✔ (Linux) |
 
-The SSH config uses `Include` to load all files from `~/.ssh/config.d/`.
-Add host entries per machine or per project in that directory:
+## OS Support
+
+| OS | Status | Notes |
+|---|---|---|
+| macOS (Apple Silicon) | Primary | Homebrew + Brewfile |
+| Ubuntu / Debian | Supported | apt fallback |
+| Fedora | Supported | dnf fallback |
+| Other Linux | Partial | Manual package install may be needed |
+
+## Structure
 
 ```
-~/.ssh/config.d/
-├── 00-defaults       ← from this repo (global defaults)
-├── homelab           ← from this repo (your servers)
-└── local             ← machine-specific (gitignored)
+~/.dotfiles/
+├── install.sh          # Main installer (interactive)
+├── update.sh           # Pull + re-link + upgrade
+├── uninstall.sh        # Remove symlinks, restore backups
+├── Brewfile            # Homebrew packages (macOS)
+├── zsh/
+│   ├── .zshrc          # Zsh configuration
+│   ├── .zshenv         # Environment vars (all zsh instances)
+│   └── .zprofile       # Login shell setup (PATH, Homebrew)
+├── shell/
+│   ├── bashrc          # Bash configuration
+│   ├── bash_profile    # Login shell → sources bashrc
+│   ├── aliases         # Shared aliases (zsh + bash)
+│   └── functions       # Shared functions (zsh + bash)
+├── git/
+│   ├── .gitconfig      # Git settings + delta + aliases
+│   └── .gitignore_global
+├── ssh/
+│   ├── config          # SSH config (includes config.d/*)
+│   └── config.d/
+│       ├── 00-defaults # Global SSH defaults
+│       └── homelab     # Homelab servers
+├── tmux/
+│   ├── .tmux.conf      # tmux config (Catppuccin, TPM, vi-keys)
+│   └── mac-mux.10s.sh  # xbar plugin for tmux menu bar
+├── config/
+│   ├── starship.toml   # Starship prompt (Catppuccin Mocha)
+│   ├── alacritty/      # Alacritty terminal (macOS + Linux)
+│   ├── ghostty/        # Ghostty terminal
+│   └── nvim/           # Neovim (placeholder)
+├── nano/               # Nano config (Linux servers)
+├── claude/             # Claude Code settings
+└── tldr/               # Custom tldr pages
 ```
 
 ## Updating
 
 ```bash
-cd ~/.dotfiles
-git pull
-./install.sh   # re-run to pick up any new files
+cd ~/.dotfiles && ./update.sh
 ```
+
+This will:
+1. Pull latest changes from git
+2. Re-run symlinks (non-interactive)
+3. Upgrade Homebrew packages (if available)
+4. Update tmux plugins and tldr cache
+
+Or use the alias: `dotfiles-update`
+
+## Non-Interactive Mode
+
+For automation or CI, set `DOTFILES_UPDATE=1`:
+
+```bash
+DOTFILES_UPDATE=1 ./install.sh
+```
+
+You can also preset choices via environment variables:
+
+```bash
+DOTFILES_PROFILE=server DOTFILES_UPDATE=1 ./install.sh
+DOTFILES_PROFILE=workstation DOTFILES_TERMINAL=ghostty DOTFILES_UPDATE=1 ./install.sh
+```
+
+## Per-Machine Overrides
+
+These files are created automatically and ignored by git:
+
+| File | Purpose |
+|---|---|
+| `~/.zshrc.local` | Machine-specific zsh config |
+| `~/.bashrc.local` | Machine-specific bash config |
+| `~/.gitconfig.local` | Git name/email, machine-specific settings |
+| `~/.tmux.conf.local` | Machine-specific tmux config |
+| `~/.ssh/config.d/local` | Machine-specific SSH hosts |
+
+## Theme
+
+Everything uses **Catppuccin Mocha** — terminal, tmux, git delta, fzf, starship.
 
 ## Uninstall
 
 ```bash
-cd ~/.dotfiles
-./uninstall.sh
+cd ~/.dotfiles && ./uninstall.sh
 ```
 
-This removes all symlinks and restores your backups.
+Removes all symlinks and restores the most recent backup.

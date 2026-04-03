@@ -23,13 +23,10 @@ adjust-cell-height = 1
 
 # Clean minimal look — hidden titlebar matches Alacritty "Buttonless"
 macos-titlebar-style = hidden
-window-padding-x = 14
-window-padding-y = 14
+window-padding-x = 4
+window-padding-y = 4
 window-save-state = always
 
-# Initial window size (matches Alacritty 140x40)
-window-width = 140
-window-height = 40
 
 # ─── macOS ───────────────────────────────────────────────────────────────────
 
@@ -39,11 +36,11 @@ macos-option-as-alt = true
 # ─── Appearance ──────────────────────────────────────────────────────────────
 
 # Catppuccin Mocha — built-in theme (matches Alacritty color scheme exactly)
-theme = Catppuccin Mocha
-
+#theme = Catppuccin Mocha
+background = #000000
 # Background — solid with blur effect
 background-opacity = 1
-background-blur-radius = 20
+background-blur-radius = 5
 
 # ─── Cursor ──────────────────────────────────────────────────────────────────
 
