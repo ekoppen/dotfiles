@@ -358,6 +358,20 @@ if [[ "$TERMINAL" == "iterm2" || "$TERMINAL" == "all" ]]; then
         info "iTerm2 is macOS only — skipping on Linux"
     fi
 
+    # Import Catppuccin Mocha profile into iTerm2
+    if [[ "$OS" == "Darwin" ]] && [[ -f "$DOTFILES_DIR/config/iterm2/catppuccin-mocha.json" ]]; then
+        ITERM2_PROFILES_DIR="$HOME/Library/Application Support/iTerm2/DynamicProfiles"
+        mkdir -p "$ITERM2_PROFILES_DIR"
+        backup_and_link "$DOTFILES_DIR/config/iterm2/catppuccin-mocha.json" "$ITERM2_PROFILES_DIR/catppuccin-mocha.json"
+        success "Loaded Catppuccin Mocha profile (restart iTerm2 to apply)"
+
+        # Set Catppuccin Mocha as default profile
+        if defaults read com.googlecode.iterm2 &>/dev/null 2>&1; then
+            defaults write com.googlecode.iterm2 "Default Bookmark Guid" -string "catppuccin-mocha-dotfiles"
+            success "Set Catppuccin Mocha as default iTerm2 profile"
+        fi
+    fi
+
     echo ""
 fi
 
