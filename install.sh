@@ -62,7 +62,7 @@ ask_yn() {
     local answer
     read -rp "$(echo -e "${CYAN}?${NC} ${question} ${hint} ")" answer
     answer="${answer:-$default}"
-    echo "${answer,,}"  # lowercase
+    echo "$answer" | tr '[:upper:]' '[:lower:]'  # lowercase (bash 3.2 compatible)
 }
 
 backup_and_link() {
