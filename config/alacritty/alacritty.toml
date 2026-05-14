@@ -185,6 +185,14 @@ hide_when_typing = false            # Cursor verdwijnt tijdens typen
 
 [keyboard]
 bindings = [
+  # ── tmux Prefix bridge ──
+  # Cmd+N / Cmd+T → send Ctrl+A then 'c' so tmux creates a new window (tab)
+  # Cmd+[ / Cmd+] → previous / next tmux window
+  { key = "N",      mods = "Command",          chars = "c"             },
+  { key = "T",      mods = "Command",          chars = "c"             },
+  { key = "LBracket", mods = "Command",        chars = "p"             },
+  { key = "RBracket", mods = "Command",        chars = "n"             },
+
   # ── macOS Navigation (like Terminal.app / iTerm2) ──
   #
   # Cmd+Left/Right  = begin/end of line
@@ -204,7 +212,6 @@ bindings = [
   { key = "Delete", mods = "Option",          chars = "\u001bd"             },  # Opt+Delete     = delete word right
 
   # ── Window Management ──
-  { key = "N",      mods = "Command",         action = "CreateNewWindow"    },
   { key = "Return", mods = "Command|Shift",   action = "SpawnNewInstance"   },
   { key = "F11",    mods = "None",            action = "ToggleFullscreen"   },
 
@@ -229,7 +236,12 @@ bindings = [
 
   # ── SSH / Server Convenience ──
   # Quick new window (handy for parallel SSH sessions)
-  { key = "T",      mods = "Command",         action = "CreateNewWindow"    },
+
+  # ── Safety: prevent accidental close ──
+  # Alacritty has no "confirm before quit" dialog, so disable the close shortcuts.
+  # Use the menu (Alacritty → Quit) or type `exit` when you really want to quit.
+  { key = "Q",      mods = "Command",         action = "ReceiveChar"        },
+  { key = "W",      mods = "Command",         action = "ReceiveChar"        },
 ]
 
 # ═══════════════════════════════════════════════════════════════════════════════

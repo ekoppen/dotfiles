@@ -55,6 +55,27 @@ fi
 [[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH"
 [[ -d "$HOME/bin" ]]        && export PATH="$HOME/bin:$PATH"
 
+# ─── Auto-tmux in Alacritty ──────────────────────────────────────
+#
+# Alacritty has no native tabs by design — tmux provides them plus a
+# persistent top status bar. Attach to the most recent session, or
+# create one if none exist.
+#
+# Escape hatch: ALACRITTY_NO_TMUX=1 alacritty   → opens plain shell.
+#
+if [[ -n "$ALACRITTY_WINDOW_ID" && -z "$TMUX" && -z "$ALACRITTY_NO_TMUX" ]] \
+    && command -v tmux >/dev/null 2>&1; then
+    # If "main" already has a client attached, spawn a fresh unnamed session
+    # so a second Alacritty window doesn't mirror the first. Otherwise attach
+    # to (or create) "main".
+    if tmux has-session -t main 2>/dev/null \
+       && [[ -n "$(tmux list-clients -t main 2>/dev/null)" ]]; then
+        exec tmux new-session
+    else
+        exec tmux new -A -s main
+    fi
+fi
+
 # ─── Environment ──────────────────────────────────────────────────
 
 export EDITOR="${EDITOR:-nano}"
@@ -177,3 +198,5 @@ for _f in \
     if [[ -f "$_f" ]]; then source "$_f"; break; fi
 done
 unset _f
+
+. "$HOME/.local/share/../bin/env"
