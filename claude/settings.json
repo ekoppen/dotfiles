@@ -20,7 +20,8 @@
       "Bash(brew list*)",
       "Bash(brew search*)",
       "Bash(mkdir *)",
-      "Bash(sw_vers*)"
+      "Bash(sw_vers*)",
+      "mcp__pencil"
     ],
     "deny": [
       "Bash(rm -rf /)",
@@ -33,10 +34,6 @@
       "Bash(curl * | bash)",
       "Bash(curl * | sh)"
     ]
-  },
-  "statusLine": {
-    "type": "command",
-    "command": "~/.claude/statusline.sh"
   },
   "hooks": {
     "Notification": [
@@ -61,5 +58,10 @@
         ]
       }
     ]
-  }
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline.sh"
+  },
+  "theme": "light-daltonized"
 }

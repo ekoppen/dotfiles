@@ -146,3 +146,5 @@ fi
 # ─── Local Overrides ─────────────────────────────────────────────
 
 [[ -f "$HOME/.bashrc.local" ]] && source "$HOME/.bashrc.local"
+
+. "$HOME/.local/share/../bin/env"

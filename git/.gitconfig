@@ -83,3 +83,6 @@
 
 [url "git@github.com:"]
     insteadOf = https://github.com/
+[user]
+	name = Eelko Koppen
+	email = eelko_koppen@hotmail.com
