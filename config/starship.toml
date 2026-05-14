@@ -5,6 +5,12 @@
 # ║  Reference: https://starship.rs/config/                         ║
 # ╚══════════════════════════════════════════════════════════════════╝
 
+# ─── Scan / Command Timeouts ────────────────────────────────────
+# Verhoogd van defaults (30ms / 500ms) zodat scans op trage volumes
+# zoals /Volumes/DATA niet timeouten met "Scanning current directory timed out".
+scan_timeout = 1000
+command_timeout = 1000
+
 # ─── Prompt Format ──────────────────────────────────────────────
 #
 #  Two-line prompt:
