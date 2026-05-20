@@ -193,6 +193,7 @@ if [[ "$OS" == "Termux" ]]; then
 
     run mkdir -p "$HOME/.termux"
     backup_and_link "$DOTFILES_DIR/termux/termux.properties" "$HOME/.termux/termux.properties"
+    backup_and_link "$DOTFILES_DIR/termux/colors.properties" "$HOME/.termux/colors.properties"
 
     # Apply changes without restarting Termux. The command lives in
     # the termux-tools package and may not be installed on a bare

@@ -40,6 +40,7 @@ TARGETS=(
     "$HOME/.config/alacritty/alacritty.toml"
     "$HOME/.config/starship.toml"
     "$HOME/.termux/termux.properties"
+    "$HOME/.termux/colors.properties"
 )
 
 for target in "${TARGETS[@]}"; do
@@ -73,6 +74,7 @@ if [[ -d "$BACKUP_BASE" ]]; then
                 alacritty.toml) cp "$file" "$HOME/.config/alacritty/alacritty.toml" ;;
                 starship.toml)  cp "$file" "$HOME/.config/starship.toml" ;;
                 termux.properties) cp "$file" "$HOME/.termux/termux.properties" ;;
+                colors.properties) cp "$file" "$HOME/.termux/colors.properties" ;;
             esac
             info "Restored $filename"
         done

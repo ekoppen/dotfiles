@@ -24,7 +24,8 @@ keyboard setup.
 
    The installer detects Termux automatically (via `$TERMUX_VERSION`
    or `uname -o == Android`), skips Alacritty, creates `~/.termux/`,
-   symlinks `termux.properties`, and runs `termux-reload-settings`.
+   symlinks `termux.properties` + `colors.properties`, and runs
+   `termux-reload-settings`.
 
 4. **Recommended extras:**
    ```sh
@@ -46,6 +47,14 @@ keyboard setup.
 | `enforce-char-based-input` | `true` | Avoids dropped chars on Avatto-style BT keyboards |
 | `extra-keys` | 2 rows | Modifiers + nav cluster for touch use |
 | `terminal-cursor-style` | `block` | Matches the desktop terminal |
+
+## What's in `colors.properties`
+
+Catppuccin Mocha palette — same one the desktop Alacritty config uses.
+This is what makes the tmux status bar, starship prompt, and tools
+like `eza` / `bat` / `fzf` look identical on the phone and the Mac.
+Without it, Termux falls back to its default Android terminal palette
+and Catppuccin-targeted hex colors render with poor contrast.
 
 ## Re-applying changes
 
