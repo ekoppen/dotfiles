@@ -1,6 +1,6 @@
 # 🏠 Dotfiles
 
-Personal configuration files for macOS and Linux systems.
+Personal configuration files for macOS, Linux, and Termux (Android).
 
 Managed with symlinks — one repo, all machines in sync.
 
@@ -9,9 +9,11 @@ Managed with symlinks — one repo, all machines in sync.
 | Config | Path | Description |
 |--------|------|-------------|
 | Alacritty | `~/.config/alacritty/` | Terminal emulator (macOS only) |
+| Termux | `~/.termux/termux.properties` | Android terminal config (Termux only) |
 | Starship | `~/.config/starship.toml` | Cross-platform shell prompt |
 | Zsh | `~/.zshrc` | Zsh shell configuration |
 | Bash | `~/.bashrc`, `~/.bash_profile` | Bash shell configuration |
+| Shell fragments | `~/.shell/{common,macos,linux,termux}.sh` | Platform-split helpers |
 | SSH | `~/.ssh/config` | SSH hosts and settings |
 | Git | `~/.gitconfig` | Git identity and preferences |
 
@@ -28,10 +30,22 @@ chmod +x install.sh
 ```
 
 The installer will:
-1. Detect your OS (macOS or Linux)
+1. Detect your OS (macOS, Linux, or Termux)
 2. Back up any existing configs to `~/.dotfiles-backup/`
 3. Create symlinks from the repo to the expected locations
 4. Install only what's relevant for the current system
+5. On Termux: run `termux-reload-settings` to apply config immediately
+
+Flags:
+- `--dry-run` / `-n` — print what would happen without changing anything
+- `--verbose` / `-v` — show skipped (already-correct) links and parent-dir creation
+- `--help` / `-h` — show usage
+
+## Termux (Android)
+
+See [`termux/README.md`](termux/README.md) for a Termux-specific
+quick-start (bootstrap packages, `termux-setup-storage`, recommended
+extras).
 
 ## Per-Machine Overrides
 

@@ -186,6 +186,29 @@ elif [[ "$OS" == "Termux" ]]; then
     verbose "Skipping Alacritty (not relevant on Termux)"
 fi
 
+# ─── Termux (Android only) ───────────────────────────────────────
+
+if [[ "$OS" == "Termux" ]]; then
+    echo -e "${BOLD}── Termux (Android) ──${NC}"
+
+    run mkdir -p "$HOME/.termux"
+    backup_and_link "$DOTFILES_DIR/termux/termux.properties" "$HOME/.termux/termux.properties"
+
+    # Apply changes without restarting Termux. The command lives in
+    # the termux-tools package and may not be installed on a bare
+    # bootstrap — fall back silently.
+    if [[ "$DRY_RUN" -eq 1 ]]; then
+        plan "run termux-reload-settings"
+    elif command -v termux-reload-settings &>/dev/null; then
+        termux-reload-settings
+        success "Reloaded Termux settings"
+    else
+        warn "termux-reload-settings not found — restart Termux to apply"
+    fi
+
+    echo ""
+fi
+
 # ─── Starship (cross-platform) ───────────────────────────────────
 
 echo -e "${BOLD}── Starship ──${NC}"

@@ -39,6 +39,7 @@ TARGETS=(
     "$HOME/.ssh/config.d/homelab"
     "$HOME/.config/alacritty/alacritty.toml"
     "$HOME/.config/starship.toml"
+    "$HOME/.termux/termux.properties"
 )
 
 for target in "${TARGETS[@]}"; do
@@ -71,6 +72,7 @@ if [[ -d "$BACKUP_BASE" ]]; then
                 config)         cp "$file" "$HOME/.ssh/config" ;;
                 alacritty.toml) cp "$file" "$HOME/.config/alacritty/alacritty.toml" ;;
                 starship.toml)  cp "$file" "$HOME/.config/starship.toml" ;;
+                termux.properties) cp "$file" "$HOME/.termux/termux.properties" ;;
             esac
             info "Restored $filename"
         done
