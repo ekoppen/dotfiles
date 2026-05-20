@@ -72,6 +72,12 @@ backup_and_link "$DOTFILES_DIR/shell/bash_profile"  "$HOME/.bash_profile"
 backup_and_link "$DOTFILES_DIR/shell/aliases"       "$HOME/.aliases"
 backup_and_link "$DOTFILES_DIR/shell/functions"     "$HOME/.functions"
 
+# Platform-split shell fragments (sourced by zshrc/bashrc)
+backup_and_link "$DOTFILES_DIR/shell/common.sh"     "$HOME/.shell/common.sh"
+backup_and_link "$DOTFILES_DIR/shell/macos.sh"      "$HOME/.shell/macos.sh"
+backup_and_link "$DOTFILES_DIR/shell/linux.sh"      "$HOME/.shell/linux.sh"
+backup_and_link "$DOTFILES_DIR/shell/termux.sh"     "$HOME/.shell/termux.sh"
+
 echo ""
 
 # ─── Git Config ───────────────────────────────────────────────────

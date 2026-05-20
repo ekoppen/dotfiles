@@ -1,5 +1,12 @@
 # ╔══════════════════════════════════════════════════════════════════╗
 # ║  .bashrc  ·  Managed by dotfiles                               ║
+# ║                                                                 ║
+# ║  Layout:                                                        ║
+# ║    1. bash-specific options (history, shopt)                    ║
+# ║    2. OS detection + platform-specific shell config             ║
+# ║    3. Common shell config (aliases, functions, env, tmux, ...)  ║
+# ║    4. Shell-specific tool inits (starship, fzf, zoxide, bashc.) ║
+# ║    5. Local overrides                                           ║
 # ╚══════════════════════════════════════════════════════════════════╝
 
 # Exit if not interactive
@@ -25,23 +32,29 @@ shopt -s autocd          # cd by typing directory name
 shopt -s globstar        # ** matches recursively
 shopt -s nocaseglob      # Case-insensitive globbing
 
-# ─── Path ─────────────────────────────────────────────────────────
+# ─── OS Detection ─────────────────────────────────────────────────
+#
+# DOTFILES_OS is consumed by ~/.shell/common.sh and other scripts.
+# Termux runs on Android Linux but needs its own handling.
+#
+case "$(uname -s)" in
+    Darwin) export DOTFILES_OS="macos" ;;
+    Linux)
+        if [[ -n "${TERMUX_VERSION:-}" ]] || [[ "$(uname -o 2>/dev/null)" == "Android" ]]; then
+            export DOTFILES_OS="termux"
+        else
+            export DOTFILES_OS="linux"
+        fi
+        ;;
+    *) export DOTFILES_OS="unknown" ;;
+esac
 
-# Homebrew (macOS)
-if [[ -d "/opt/homebrew/bin" ]]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-fi
+# Platform-specific FIRST so tools like Homebrew are in PATH
+# before common.sh sources aliases that probe for eza, fzf, etc.
+[[ -f "$HOME/.shell/$DOTFILES_OS.sh" ]] && source "$HOME/.shell/$DOTFILES_OS.sh"
 
-# Local bins
-[[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH"
-[[ -d "$HOME/bin" ]]        && export PATH="$HOME/bin:$PATH"
-
-# ─── Environment ──────────────────────────────────────────────────
-
-export EDITOR="${EDITOR:-nano}"
-export VISUAL="$EDITOR"
-export LANG="en_US.UTF-8"
-export LC_ALL="en_US.UTF-8"
+# Shared cross-platform shell config
+[[ -f "$HOME/.shell/common.sh" ]] && source "$HOME/.shell/common.sh"
 
 # ─── Prompt ───────────────────────────────────────────────────────
 
@@ -67,12 +80,10 @@ elif [[ -f /etc/bash_completion ]]; then
     source /etc/bash_completion
 elif [[ -f "/opt/homebrew/etc/profile.d/bash_completion.sh" ]]; then
     source "/opt/homebrew/etc/profile.d/bash_completion.sh"
+elif [[ -n "${PREFIX:-}" ]] && [[ -f "$PREFIX/share/bash-completion/bash_completion" ]]; then
+    # Termux ships completions under $PREFIX
+    source "$PREFIX/share/bash-completion/bash_completion"
 fi
-
-# ─── Shared Aliases & Functions ───────────────────────────────────
-
-[[ -f "$HOME/.aliases" ]]   && source "$HOME/.aliases"
-[[ -f "$HOME/.functions" ]] && source "$HOME/.functions"
 
 # ─── Tool Integrations ───────────────────────────────────────────
 
@@ -84,25 +95,6 @@ fi
 # zoxide (smart cd)
 if command -v zoxide &>/dev/null; then
     eval "$(zoxide init bash)"
-fi
-
-# ─── SSH Agent ────────────────────────────────────────────────────
-
-# Auto-start ssh-agent if not running (Linux servers)
-if [[ "$(uname -s)" != "Darwin" ]] && [[ -z "${SSH_AUTH_SOCK:-}" ]]; then
-    eval "$(ssh-agent -s)" >/dev/null 2>&1
-fi
-
-# ─── tmux Auto-attach (SSH) ──────────────────────────────────────
-
-# On SSH login, attach to (or create) a tmux session named "main".
-# Skipped when: not over SSH, already inside tmux, NO_TMUX is set,
-# or tmux isn't installed.
-if [[ -n "${SSH_CONNECTION:-}" ]] \
-    && [[ -z "${TMUX:-}" ]] \
-    && [[ -z "${NO_TMUX:-}" ]] \
-    && command -v tmux &>/dev/null; then
-    tmux new-session -A -s main
 fi
 
 # ─── Local Overrides ─────────────────────────────────────────────
