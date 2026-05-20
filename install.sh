@@ -110,6 +110,15 @@ if [[ "$OS" == "Darwin" ]]; then
     echo ""
 fi
 
+# ─── Starship (cross-platform) ───────────────────────────────────
+
+echo -e "${BOLD}── Starship ──${NC}"
+
+mkdir -p "$HOME/.config"
+backup_and_link "$DOTFILES_DIR/starship/starship.toml" "$HOME/.config/starship.toml"
+
+echo ""
+
 # ─── Create local override files if they don't exist ─────────────
 
 echo -e "${BOLD}── Local Overrides ──${NC}"

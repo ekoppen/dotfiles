@@ -9,6 +9,7 @@ Managed with symlinks — one repo, all machines in sync.
 | Config | Path | Description |
 |--------|------|-------------|
 | Alacritty | `~/.config/alacritty/` | Terminal emulator (macOS only) |
+| Starship | `~/.config/starship.toml` | Cross-platform shell prompt |
 | Zsh | `~/.zshrc` | Zsh shell configuration |
 | Bash | `~/.bashrc`, `~/.bash_profile` | Bash shell configuration |
 | SSH | `~/.ssh/config` | SSH hosts and settings |
