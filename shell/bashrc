@@ -93,6 +93,18 @@ if [[ "$(uname -s)" != "Darwin" ]] && [[ -z "${SSH_AUTH_SOCK:-}" ]]; then
     eval "$(ssh-agent -s)" >/dev/null 2>&1
 fi
 
+# ─── tmux Auto-attach (SSH) ──────────────────────────────────────
+
+# On SSH login, attach to (or create) a tmux session named "main".
+# Skipped when: not over SSH, already inside tmux, NO_TMUX is set,
+# or tmux isn't installed.
+if [[ -n "${SSH_CONNECTION:-}" ]] \
+    && [[ -z "${TMUX:-}" ]] \
+    && [[ -z "${NO_TMUX:-}" ]] \
+    && command -v tmux &>/dev/null; then
+    tmux new-session -A -s main
+fi
+
 # ─── Local Overrides ─────────────────────────────────────────────
 
 [[ -f "$HOME/.bashrc.local" ]] && source "$HOME/.bashrc.local"

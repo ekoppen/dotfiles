@@ -22,6 +22,9 @@ Host *
     IgnoreUnknown UseKeychain
     UseKeychain yes
 
+    # ── Locale (don't push client LC_*/LANG to remote) ────────────
+    SendEnv -LC_* -LANG
+
     # ── Quality of Life ───────────────────────────────────────────
     Compression yes
     StrictHostKeyChecking ask

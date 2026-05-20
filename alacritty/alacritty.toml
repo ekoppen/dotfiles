@@ -60,7 +60,7 @@ multiplier = 3                 # Scroll speed multiplier
 #
 
 [font]
-size = 14.0                    # Adjust to your display & preference
+size = 22.0                    # Adjust to your display & preference
 builtin_box_drawing = true     # Use built-in box drawing characters
 
   [font.normal]
