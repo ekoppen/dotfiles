@@ -2,15 +2,52 @@
 # ╔══════════════════════════════════════════════════════════════════╗
 # ║  Dotfiles Installer                                             ║
 # ║  Detects OS, backs up existing configs, creates symlinks        ║
+# ║                                                                  ║
+# ║  Usage: ./install.sh [-n|--dry-run] [-v|--verbose] [-h|--help]  ║
 # ╚══════════════════════════════════════════════════════════════════╝
 
 set -euo pipefail
+
+# ─── Argument parsing ────────────────────────────────────────────
+
+DRY_RUN=0
+VERBOSE=0
+
+usage() {
+    cat <<'USAGE'
+Usage: install.sh [OPTIONS]
+
+Detects OS, backs up existing configs, and creates symlinks from this
+repo into your home directory.
+
+Options:
+  -n, --dry-run    Print what would happen without changing anything
+  -v, --verbose    Show extra detail (skipped links, mkdir noise)
+  -h, --help       Show this help text
+USAGE
+}
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -n|--dry-run) DRY_RUN=1 ;;
+        -v|--verbose) VERBOSE=1 ;;
+        -h|--help)    usage; exit 0 ;;
+        *)            echo "Unknown option: $1" >&2; usage >&2; exit 2 ;;
+    esac
+    shift
+done
 
 # ─── Config ───────────────────────────────────────────────────────
 
 DOTFILES_DIR="$(cd "$(dirname "$0")" && pwd)"
 BACKUP_DIR="$HOME/.dotfiles-backup/$(date +%Y%m%d_%H%M%S)"
-OS="$(uname -s)"
+
+# OS detection: Termux runs on Android Linux but needs its own bucket
+if [[ -n "${TERMUX_VERSION:-}" ]] || [[ "$(uname -o 2>/dev/null)" == "Android" ]]; then
+    OS="Termux"
+else
+    OS="$(uname -s)"
+fi
 
 # ─── Colors ───────────────────────────────────────────────────────
 
@@ -25,8 +62,19 @@ info()    { echo -e "${BLUE}●${NC} $1"; }
 success() { echo -e "${GREEN}✔${NC} $1"; }
 warn()    { echo -e "${YELLOW}⚠${NC} $1"; }
 error()   { echo -e "${RED}✖${NC} $1"; }
+verbose() { [[ "$VERBOSE" -eq 1 ]] && echo -e "${BLUE}·${NC} $1" || true; }
+plan()    { echo -e "${YELLOW}↪${NC} would $1"; }
 
 # ─── Helpers ──────────────────────────────────────────────────────
+
+run() {
+    # Execute a command, or print it (dry-run). Stays quiet otherwise.
+    if [[ "$DRY_RUN" -eq 1 ]]; then
+        plan "$*"
+    else
+        "$@"
+    fi
+}
 
 backup_and_link() {
     local source="$1"
@@ -36,22 +84,34 @@ backup_and_link() {
 
     # Create parent directory if needed
     if [[ ! -d "$target_dir" ]]; then
-        mkdir -p "$target_dir"
-        info "Created directory: $target_dir"
+        run mkdir -p "$target_dir"
+        verbose "Created directory: $target_dir"
+    fi
+
+    # Idempotency: skip if target already points at the right source
+    if [[ -L "$target" ]] && [[ "$(readlink "$target")" == "$source" ]]; then
+        verbose "Already linked: $(basename "$target")"
+        return 0
     fi
 
     # Back up existing file/symlink
     if [[ -e "$target" || -L "$target" ]]; then
-        mkdir -p "$BACKUP_DIR"
-        local backup_path="$BACKUP_DIR/$(basename "$target")"
-        cp -rL "$target" "$backup_path" 2>/dev/null || true
-        rm -rf "$target"
-        warn "Backed up existing $(basename "$target") → $BACKUP_DIR/"
+        if [[ "$DRY_RUN" -eq 1 ]]; then
+            plan "back up $target → $BACKUP_DIR/"
+        else
+            mkdir -p "$BACKUP_DIR"
+            local backup_path="$BACKUP_DIR/$(basename "$target")"
+            cp -rL "$target" "$backup_path" 2>/dev/null || true
+            rm -rf "$target"
+            warn "Backed up existing $(basename "$target") → $BACKUP_DIR/"
+        fi
     fi
 
     # Create symlink
-    ln -sf "$source" "$target"
-    success "Linked $(basename "$target") → $source"
+    run ln -sf "$source" "$target"
+    if [[ "$DRY_RUN" -eq 0 ]]; then
+        success "Linked $(basename "$target") → $source"
+    fi
 }
 
 # ─── Header ───────────────────────────────────────────────────────
@@ -60,6 +120,12 @@ echo ""
 echo -e "${BOLD}🏠 Dotfiles Installer${NC}"
 echo -e "   OS detected: ${BOLD}$OS${NC}"
 echo -e "   Source:       ${BOLD}$DOTFILES_DIR${NC}"
+if [[ "$DRY_RUN" -eq 1 ]]; then
+    echo -e "   Mode:         ${BOLD}${YELLOW}DRY RUN${NC} (no changes will be made)"
+fi
+if [[ "$VERBOSE" -eq 1 ]]; then
+    echo -e "   Mode:         ${BOLD}VERBOSE${NC}"
+fi
 echo ""
 
 # ─── Shell Configs ────────────────────────────────────────────────
@@ -93,15 +159,17 @@ echo ""
 
 echo -e "${BOLD}── SSH ──${NC}"
 
-mkdir -p "$HOME/.ssh/config.d"
-chmod 700 "$HOME/.ssh"
+run mkdir -p "$HOME/.ssh/config.d"
+run chmod 700 "$HOME/.ssh"
 
 backup_and_link "$DOTFILES_DIR/ssh/config"              "$HOME/.ssh/config"
 backup_and_link "$DOTFILES_DIR/ssh/config.d/00-defaults" "$HOME/.ssh/config.d/00-defaults"
 backup_and_link "$DOTFILES_DIR/ssh/config.d/homelab"    "$HOME/.ssh/config.d/homelab"
 
-chmod 600 "$HOME/.ssh/config"
-chmod 600 "$HOME/.ssh/config.d/"* 2>/dev/null || true
+if [[ "$DRY_RUN" -eq 0 ]]; then
+    chmod 600 "$HOME/.ssh/config"
+    chmod 600 "$HOME/.ssh/config.d/"* 2>/dev/null || true
+fi
 
 echo ""
 
@@ -110,17 +178,19 @@ echo ""
 if [[ "$OS" == "Darwin" ]]; then
     echo -e "${BOLD}── Alacritty (macOS) ──${NC}"
 
-    mkdir -p "$HOME/.config/alacritty"
+    run mkdir -p "$HOME/.config/alacritty"
     backup_and_link "$DOTFILES_DIR/alacritty/alacritty.toml" "$HOME/.config/alacritty/alacritty.toml"
 
     echo ""
+elif [[ "$OS" == "Termux" ]]; then
+    verbose "Skipping Alacritty (not relevant on Termux)"
 fi
 
 # ─── Starship (cross-platform) ───────────────────────────────────
 
 echo -e "${BOLD}── Starship ──${NC}"
 
-mkdir -p "$HOME/.config"
+run mkdir -p "$HOME/.config"
 backup_and_link "$DOTFILES_DIR/starship/starship.toml" "$HOME/.config/starship.toml"
 
 echo ""
@@ -133,12 +203,16 @@ create_local_if_missing() {
     local file="$1"
     local comment="$2"
     if [[ ! -f "$file" ]]; then
-        echo "$comment" > "$file"
-        echo "# Add your machine-specific settings below" >> "$file"
-        echo "" >> "$file"
-        success "Created $file"
+        if [[ "$DRY_RUN" -eq 1 ]]; then
+            plan "create $file"
+        else
+            echo "$comment" > "$file"
+            echo "# Add your machine-specific settings below" >> "$file"
+            echo "" >> "$file"
+            success "Created $file"
+        fi
     else
-        info "Already exists: $file"
+        verbose "Already exists: $file"
     fi
 }
 
@@ -147,20 +221,28 @@ create_local_if_missing "$HOME/.bashrc.local"   "# Local bash overrides (not tra
 create_local_if_missing "$HOME/.gitconfig.local" "# Local git overrides (not tracked by git)"
 
 if [[ ! -f "$HOME/.ssh/config.d/local" ]]; then
-    touch "$HOME/.ssh/config.d/local"
-    chmod 600 "$HOME/.ssh/config.d/local"
-    success "Created ~/.ssh/config.d/local"
+    if [[ "$DRY_RUN" -eq 1 ]]; then
+        plan "create ~/.ssh/config.d/local (chmod 600)"
+    else
+        touch "$HOME/.ssh/config.d/local"
+        chmod 600 "$HOME/.ssh/config.d/local"
+        success "Created ~/.ssh/config.d/local"
+    fi
 else
-    info "Already exists: ~/.ssh/config.d/local"
+    verbose "Already exists: ~/.ssh/config.d/local"
 fi
 
 echo ""
 
 # ─── Summary ─────────────────────────────────────────────────────
 
-echo -e "${BOLD}${GREEN}✔ Done!${NC}"
-if [[ -d "$BACKUP_DIR" ]]; then
-    echo -e "  Backups saved to: ${YELLOW}$BACKUP_DIR${NC}"
+if [[ "$DRY_RUN" -eq 1 ]]; then
+    echo -e "${BOLD}${YELLOW}✔ Dry run complete.${NC} Re-run without --dry-run to apply."
+else
+    echo -e "${BOLD}${GREEN}✔ Done!${NC}"
+    if [[ -d "$BACKUP_DIR" ]]; then
+        echo -e "  Backups saved to: ${YELLOW}$BACKUP_DIR${NC}"
+    fi
+    echo -e "  Add machine-specific settings to the ${BOLD}.local${NC} files"
 fi
-echo -e "  Add machine-specific settings to the ${BOLD}.local${NC} files"
 echo ""
