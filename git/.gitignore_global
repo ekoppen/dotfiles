@@ -32,3 +32,5 @@ venv/
 
 # ── Docker ────────────────────────
 .docker/
+
+**/.claude/settings.local.json
