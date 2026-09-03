@@ -7,18 +7,61 @@
 
 # ── QNAP NAS ─────────────────────────────────────────────────────
 
-# Host nas
-#     HostName 192.168.1.100
-#     User admin
-#     Port 22
-#     IdentityFile ~/.ssh/id_ed25519
+Host nas
+     HostName 192.168.178.217
+     User root
+     Port 8122
+     IdentityFile ~/.ssh/id_ed25519
 
 # ── Mac Mini (Home Assistant / n8n host) ──────────────────────────
 
-# Host macmini
-#     HostName 192.168.1.101
-#     User eelko
-#     IdentityFile ~/.ssh/id_ed25519
+Host macmini
+     HostName 192.168.178.125
+     User eelko
+     IdentityFile ~/.ssh/id_ed25519
+
+# ── Treafik Reverse Proxy ──────────────────────────
+
+Host traefik
+     HostName 192.168.20.190
+     User admin
+     IdentityFile ~/.ssh/id_ed25519
+
+# ── Coolify Server ──────────────────────────
+
+Host coolify-01
+     HostName 192.168.20.96
+     User admin
+     IdentityFile ~/.ssh/id_ed25519
+
+# ── Appwrite Server ──────────────────────────
+
+Host appwrite-01
+     HostName 192.168.20.61
+     User admin
+     IdentityFile ~/.ssh/id_ed25519
+
+# ── Minio Server ──────────────────────────
+
+Host minio-01
+     HostName 192.168.178.59
+     User admin
+     IdentityFile ~/.ssh/id_ed25519
+
+
+# ── Proxmox Server PVE2 ──────────────────────────
+
+Host pve2
+     HostName 192.168.178.157
+     User root
+     IdentityFile ~/.ssh/id_ed25519
+
+# ── Proxmox Server PVE3 ──────────────────────────
+
+Host pve3
+     HostName 192.168.178.9
+     User root
+     IdentityFile ~/.ssh/id_ed25519
 
 # ── Linux Server Template ────────────────────────────────────────
 
@@ -42,3 +85,4 @@
 #     ProxyJump bastion
 #     User eelko
 #     IdentityFile ~/.ssh/id_ed25519
+
