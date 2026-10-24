@@ -12,6 +12,14 @@
 # shell/shortcuts.local (untracked, zie .gitignore), die fshortcuts
 # automatisch meeleest.
 
-Dotfiles bijwerken|cd ~/.dotfiles && git pull && ./install.sh
+# ─── Dotfiles-admin ───────────────────────────────────────────────
+
+Dotfiles: shortcuts bewerken (gedeeld)|$EDITOR ~/.dotfiles/shell/shortcuts
+Dotfiles: shortcuts bewerken (lokaal)|$EDITOR ~/.dotfiles/shell/shortcuts.local
+Dotfiles: shortcuts committen + pushen|cd ~/.dotfiles && git add shell/shortcuts && git commit -m "{message}" && git push
+Dotfiles bijwerken (pull + install)|cd ~/.dotfiles && git pull && ./install.sh
+
+# ─── SSH ──────────────────────────────────────────────────────────
+
 SSH naar oudenas (Synology)|ssh -p 2222 eelko@192.168.69.249
 SSH naar host op IP|ssh {user}@{ip}
