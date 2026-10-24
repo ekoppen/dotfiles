@@ -55,27 +55,6 @@ fi
 [[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH"
 [[ -d "$HOME/bin" ]]        && export PATH="$HOME/bin:$PATH"
 
-# ─── Auto-tmux in Alacritty ──────────────────────────────────────
-#
-# Alacritty has no native tabs by design — tmux provides them plus a
-# persistent top status bar. Attach to the most recent session, or
-# create one if none exist.
-#
-# Escape hatch: ALACRITTY_NO_TMUX=1 alacritty   → opens plain shell.
-#
-if [[ -n "$ALACRITTY_WINDOW_ID" && -z "$TMUX" && -z "$ALACRITTY_NO_TMUX" ]] \
-    && command -v tmux >/dev/null 2>&1; then
-    # If "main" already has a client attached, spawn a fresh unnamed session
-    # so a second Alacritty window doesn't mirror the first. Otherwise attach
-    # to (or create) "main".
-    if tmux has-session -t main 2>/dev/null \
-       && [[ -n "$(tmux list-clients -t main 2>/dev/null)" ]]; then
-        exec tmux new-session
-    else
-        exec tmux new -A -s main
-    fi
-fi
-
 # ─── Environment ──────────────────────────────────────────────────
 
 export EDITOR="${EDITOR:-nano}"
@@ -87,6 +66,12 @@ export LC_ALL="en_US.UTF-8"
 
 [[ -f "$HOME/.aliases" ]]   && source "$HOME/.aliases"
 [[ -f "$HOME/.functions" ]] && source "$HOME/.functions"
+
+# Shortcut bar — fuzzy-pick from ~/.dotfiles/shell/shortcuts (Ctrl+G)
+if command -v fshortcuts &>/dev/null; then
+    zle -N fshortcuts
+    bindkey '^G' fshortcuts
+fi
 
 # ─── Prompt ───────────────────────────────────────────────────────
 
@@ -121,7 +106,7 @@ fi
 
 # fzf (fuzzy finder)
 if command -v fzf &>/dev/null; then
-    # Catppuccin Mocha colors (matches tmux/Ghostty theme)
+    # Catppuccin Mocha colors (matches tmux/iTerm2 theme)
     export FZF_DEFAULT_OPTS=" \
         --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
         --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
@@ -200,3 +185,7 @@ done
 unset _f
 
 [[ -f "$HOME/.local/bin/env" ]] && . "$HOME/.local/bin/env"
+
+
+# Added by Antigravity CLI installer
+export PATH="/Users/eelko/.local/bin:$PATH"

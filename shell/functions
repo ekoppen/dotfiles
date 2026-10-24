@@ -126,3 +126,18 @@ fbr() {
         sed 's/.* //' | sed 's#remotes/[^/]*/##')
     [[ -n "$branch" ]] && git checkout "$branch"
 }
+
+# ─── Shortcut bar ─────────────────────────────────────────────────
+# Fuzzy-pick a command from ~/.dotfiles/shell/shortcuts and drop it
+# in the prompt buffer (not auto-run — review/edit, then Enter).
+# Bound to Ctrl+G as a zle widget below.
+fshortcuts() {
+    command -v fzf &>/dev/null || { echo "fzf not installed"; return 1; }
+    local file="$HOME/.dotfiles/shell/shortcuts"
+    [[ -f "$file" ]] || { echo "Geen shortcuts-bestand: $file"; return 1; }
+    local selected
+    selected=$(grep -v '^[[:space:]]*#' "$file" | grep -v '^[[:space:]]*$' |
+        fzf --delimiter='|' --with-nth=1 --preview 'echo {2}' --preview-window=down,3,wrap |
+        cut -d'|' -f2-)
+    [[ -n "$selected" ]] && print -z "$selected"
+}

@@ -1,0 +1,10 @@
+# ╔══════════════════════════════════════════════════════════════════╗
+# ║  Shortcut Bar  ·  Eén regel per shortcut: label|command           ║
+# ║  Opgepikt door de fshortcuts-widget (Ctrl+G) in shell/functions   ║
+# ╚══════════════════════════════════════════════════════════════════╝
+#
+# Regels die met # beginnen of leeg zijn worden genegeerd.
+# Voorbeeld-regels hieronder — pas aan/vul aan naar smaak.
+
+Dotfiles bijwerken|cd ~/.dotfiles && git pull && ./install.sh
+SSH naar oudenas (Synology)|ssh -p 2222 eelko@192.168.69.249
