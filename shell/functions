@@ -154,5 +154,6 @@ fshortcuts() {
         selected=${selected//$p/$val}
     done
 
-    print -z "$selected"
+    BUFFER="$selected"
+    CURSOR=${#BUFFER}
 }
