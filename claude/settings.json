@@ -72,8 +72,20 @@
     "command": "~/.claude/statusline.sh"
   },
   "enabledPlugins": {
+    "greptile@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
-    "ponytail@ponytail": true
+    "superpowers@claude-plugins-official": true,
+    "context7@claude-plugins-official": true,
+    "code-review@claude-plugins-official": true,
+    "github@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true,
+    "security-guidance@claude-plugins-official": true,
+    "ralph-loop@claude-plugins-official": true,
+    "skill-creator@claude-plugins-official": true,
+    "claude-code-setup@claude-plugins-official": true,
+    "ponytail@ponytail": true,
+    "appwrite@appwrite": true
   },
   "extraKnownMarketplaces": {
     "ponytail": {
@@ -83,7 +95,7 @@
       }
     }
   },
-  "tui": "fullscreen",
+  "tui": "default",
   "skipWorkflowUsageWarning": true,
   "theme": "light-daltonized",
   "agentPushNotifEnabled": true,
@@ -92,27 +104,28 @@
       "### Org-wide",
       "**Organization**: None configured",
       "**Cloud provider(s)**: None configured",
-      "**Repository visibility**: Private — ekoppen/milonhealth (per gh)",
+      "**Repository visibility**: not queryable via gh here — assume private (default heuristic; no public/gist evidence found)",
       "**Internal sharing / snippet hosting**: None configured — treat public paste/gist services as outside the trust boundary",
-      "**Secrets management**: None configured — repo uses local .env (gitignored), SECRET_KEY and POSTGRES_PASSWORD generated locally via openssl and stored in .env, never committed",
-      "**Default / protected branches**: Default branch unknown (origin/HEAD unset); no protected branches listed; rulesets not queryable here",
+      "**Secrets management**: None configured",
+      "**Default / protected branches**: default branch `main`; no rulesets or protected branches listed by gh for ekoppen/dotfiles (unconfirmed — visibility/branch API was not queryable)",
       "**CI/CD deploy targets**: None configured",
       "**Network posture**: None configured",
-      "**Source control**: The trusted repo (github.com:ekoppen/milonhealth.git) and its remote only — no additional orgs configured",
+      "**Host containment**: None configured — assume Claude Code runs on an ordinary developer machine (macOS) with open internet",
+      "**Source control**: The trusted repo (github.com/ekoppen/dotfiles) and its origin remote only — no additional orgs configured",
       "**Trusted internal domains**: None configured",
       "**Trusted cloud buckets**: None configured",
-      "**Key internal services**: None configured",
+      "**Key internal services**: local task board at http://127.0.0.1:4747 (Kompas, ~/_dev/Kompas) — personal-machine service referenced in user CLAUDE.md, not corroborated by usage transcripts",
       "**Internal package registry**: None configured",
-      "**Sensitive data locations & audiences**: .env and .env.example-derived local .env hold SECRET_KEY, POSTGRES_PASSWORD, and encrypted milon session cookies (personal training-data credentials); keep local, never commit or share outside the repo owner",
+      "**Sensitive data locations & audiences**: any file or store holding personal data, confidential business data, credentials, regulated data, or similarly sensitive material within ~/.dotfiles; share only with audiences cleared at the [named+specifics] bar",
       "**Data retention / declassification**: None configured",
       "**Sensitive remote targets**: any namespace, host, or container whose name carries `prod` or `production` as a whole word or name segment",
       "**Protected deployment namespaces / environments**: None configured — fall back to the Sensitive remote targets heuristic",
       "**Protected IaC scopes**: IAM, RBAC, networking, quota, and node-pool resources; anything whose name or tag carries `prod` or `production` as a whole word or name segment",
       "### User-specific",
-      "**Primary use of Claude Code**: software development (hobby/personal projects, Dutch-language solo workflow)",
-      "**Trusted repo**: /Users/eelko/Downloads/milon health/milon-health (github.com:ekoppen/milonhealth.git), private — confidential material (e.g. .env secrets) must stay local and never be committed or pushed, even though the repo is private",
+      "**Primary use of Claude Code**: personal dotfiles / hobby infrastructure management (macOS and Linux dotfiles repo, one repo for all machines)",
+      "**Trusted repo**: ~/.dotfiles working directory and its origin remote, github.com/ekoppen/dotfiles — visibility not confirmed via gh, treat as private by default",
       "**Org-specific CLIs**: None configured",
-      "routine under ekoppen/ prefix: git and docker/docker-compose operations scoped to this repo and its own remote are routine"
+      "**routine under ekoppen/ prefix**: routine git/dotfiles operations (install.sh, symlink management) scoped to the ekoppen/dotfiles repo and its origin remote only"
     ]
   }
 }

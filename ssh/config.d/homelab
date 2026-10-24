@@ -63,6 +63,13 @@ Host pve3
      User root
      IdentityFile ~/.ssh/id_ed25519
 
+# ── Retrohead LXC (op PVE2, ctid 200) ─────────────────────────────
+
+Host retrohead
+     HostName 192.168.178.246
+     User root
+     IdentityFile ~/.ssh/id_ed25519
+
 # ── Linux Server Template ────────────────────────────────────────
 
 # Host myserver
