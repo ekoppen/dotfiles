@@ -137,7 +137,9 @@ fshortcuts() {
     [[ -f "$file" ]] || { echo "Geen shortcuts-bestand: $file"; return 1; }
     local selected
     selected=$(grep -v '^[[:space:]]*#' "$file" | grep -v '^[[:space:]]*$' |
-        fzf --delimiter='|' --with-nth=1 --preview 'echo {2}' --preview-window=down,3,wrap |
+        fzf --delimiter='|' --with-nth=1 \
+            --preview 'bat --color=always --language=bash --style=plain --paging=never <<< {2} 2>/dev/null || echo {2}' \
+            --preview-window=down,3,wrap |
         cut -d'|' -f2-)
     [[ -n "$selected" ]] && print -z "$selected"
 }
