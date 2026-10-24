@@ -26,3 +26,11 @@ cmd=$(print -r -- "$filtered" | fzf --filter="Label one" --delimiter='|' --with-
 [[ "$cmd" == "echo one" ]] || { echo "FAIL: expected 'echo one', got '$cmd'"; exit 1; }
 
 echo "PASS: fshortcuts parsing ok"
+
+# Placeholder extraction (same regex fshortcuts() uses), incl. a duplicate
+# {ip} to check dedup via sort -u.
+cmd='ssh {user}@{ip} && ping {ip}'
+placeholders=$(grep -oE '\{[A-Za-z_][A-Za-z0-9_]*\}' <<< "$cmd" | sort -u | tr '\n' ' ')
+[[ "$placeholders" == "{ip} {user} " ]] || { echo "FAIL: expected '{ip} {user} ', got '$placeholders'"; exit 1; }
+
+echo "PASS: placeholder extraction ok"

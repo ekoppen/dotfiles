@@ -4,7 +4,10 @@
 # ╚══════════════════════════════════════════════════════════════════╝
 #
 # Regels die met # beginnen of leeg zijn worden genegeerd.
+# Gebruik {naam} als invoerveld — fshortcuts vraagt er bij selectie om
+# en vult het in voor het command in je prompt landt.
 # Voorbeeld-regels hieronder — pas aan/vul aan naar smaak.
 
 Dotfiles bijwerken|cd ~/.dotfiles && git pull && ./install.sh
 SSH naar oudenas (Synology)|ssh -p 2222 eelko@192.168.69.249
+SSH naar host op IP|ssh {user}@{ip}
