@@ -1,5 +1,6 @@
 # Machine-specific overrides (stay local)
 ssh/config.d/local
+shell/shortcuts.local
 
 # SSH keys should never be in git
 *.pem

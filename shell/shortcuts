@@ -6,7 +6,11 @@
 # Regels die met # beginnen of leeg zijn worden genegeerd.
 # Gebruik {naam} als invoerveld — fshortcuts vraagt er bij selectie om
 # en vult het in voor het command in je prompt landt.
-# Voorbeeld-regels hieronder — pas aan/vul aan naar smaak.
+#
+# Dit bestand is gedeeld (git-tracked) — zet hier alleen shortcuts die
+# op elke machine kloppen. Eigen/machine-specifieke shortcuts gaan in
+# shell/shortcuts.local (untracked, zie .gitignore), die fshortcuts
+# automatisch meeleest.
 
 Dotfiles bijwerken|cd ~/.dotfiles && git pull && ./install.sh
 SSH naar oudenas (Synology)|ssh -p 2222 eelko@192.168.69.249

@@ -34,3 +34,19 @@ placeholders=$(grep -oE '\{[A-Za-z_][A-Za-z0-9_]*\}' <<< "$cmd" | sort -u | tr '
 [[ "$placeholders" == "{ip} {user} " ]] || { echo "FAIL: expected '{ip} {user} ', got '$placeholders'"; exit 1; }
 
 echo "PASS: placeholder extraction ok"
+
+# Shared + .local merge, incl. the no-local-file case (cat on a missing
+# second file errors on stderr but still prints the first file's stdout).
+localfile=$(mktemp)
+trap 'rm -f "$tmpfile" "$localfile"' EXIT
+cat > "$localfile" <<'EOF'
+Label three|echo three
+EOF
+
+merged_lines=$(cat "$tmpfile" "$localfile" 2>/dev/null | grep -v '^[[:space:]]*#' | grep -v '^[[:space:]]*$' | wc -l | tr -d ' ')
+[[ "$merged_lines" == "3" ]] || { echo "FAIL: expected 3 merged lines, got $merged_lines"; exit 1; }
+
+no_local_lines=$({ cat "$tmpfile" "/nonexistent-shortcuts.local" 2>/dev/null || true; } | grep -v '^[[:space:]]*#' | grep -v '^[[:space:]]*$' | wc -l | tr -d ' ')
+[[ "$no_local_lines" == "2" ]] || { echo "FAIL: expected 2 lines with no .local file, got $no_local_lines"; exit 1; }
+
+echo "PASS: shared + .local merge ok"
