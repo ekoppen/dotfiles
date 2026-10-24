@@ -3,7 +3,22 @@
     "allow": [
       "Bash(git add:*)",
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(zsh -i -c 'bindkey \"^R\"; bindkey \"^T\"; typeset -f fzf-history-widget >/dev/null && echo \"fzf widgets: LOADED\" || echo \"fzf widgets: NOT LOADED\"')",
+      "Bash(defaults read *)",
+      "Read(//Users/eelko/.config/alacritty/**)",
+      "Read(//Users/eelko/**)",
+      "Read(//opt/homebrew/Cellar/fzf/0.73.1/**)",
+      "Bash(git rm *)",
+      "Bash(rm -f ~/.config/alacritty/alacritty.toml ~/.config/ghostty/config)",
+      "Bash(rmdir ~/.config/alacritty ~/.config/ghostty)",
+      "Bash(brew uninstall *)",
+      "Bash(bash -n /Users/eelko/.dotfiles/install.sh)",
+      "Bash(bash -n /Users/eelko/.dotfiles/uninstall.sh)",
+      "Bash(bash -n /Users/eelko/.dotfiles/tmux/mac-mux.10s.sh)",
+      "Bash(tmux -L cfgtest -f /Users/eelko/.dotfiles/tmux/.tmux.conf new-session -d)",
+      "Bash(tmux -L cfgtest kill-server)",
+      "Bash(zsh -i -c 'typeset -f fzf-history-widget >/dev/null && echo \"zshrc + fzf: OK\"')"
     ]
   }
 }

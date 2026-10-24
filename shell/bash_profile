@@ -8,3 +8,7 @@
 [[ -f "$HOME/.bashrc" ]] && source "$HOME/.bashrc"
 
 . "$HOME/.local/share/../bin/env"
+
+
+# Added by Antigravity CLI installer
+export PATH="/Users/eelko/.local/bin:$PATH"

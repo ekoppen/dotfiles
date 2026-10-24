@@ -18,3 +18,9 @@ export VISUAL="$EDITOR"
 # Locale
 export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
+
+# Homebrew (macOS) — lives here, not .zprofile, so non-interactive/non-login
+# shells (e.g. remote SSH exec used by recode_agent_host installs) see it too.
+if [[ -d "/opt/homebrew/bin" ]]; then
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+fi
