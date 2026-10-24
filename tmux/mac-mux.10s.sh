@@ -4,7 +4,7 @@
 # <xbar.version>v0.2</xbar.version>
 # <xbar.author>etopiei</xbar.author>
 # <xbar.author.github>etopiei</xbar.author.github>
-# <xbar.desc>Manage tmux sessions from the menu bar. Opens in Alacritty or Terminal.</xbar.desc>
+# <xbar.desc>Manage tmux sessions from the menu bar. Opens in iTerm2 or Terminal.</xbar.desc>
 # <xbar.dependencies>bash,tmux</xbar.dependencies>
 
 # Ensure Homebrew binaries are in PATH
@@ -14,8 +14,11 @@ export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
 
 open_in_terminal() {
     local cmd="$1"
-    if [ -d "/Applications/Alacritty.app" ]; then
-        open -na Alacritty --args -e $cmd
+    if [ -d "/Applications/iTerm.app" ]; then
+        osascript -e 'tell application "iTerm"
+            create window with default profile command "'"$cmd"'"
+            activate
+        end tell'
     else
         osascript -e 'tell application "Terminal" to do script "'"$cmd"'"'
         osascript -e 'tell application "Terminal" to activate'

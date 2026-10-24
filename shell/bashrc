@@ -92,7 +92,7 @@ fi
 
 # fzf (fuzzy finder)
 if command -v fzf &>/dev/null; then
-    # Catppuccin Mocha colors (matches tmux/Ghostty theme)
+    # Catppuccin Mocha colors (matches tmux/iTerm2 theme)
     export FZF_DEFAULT_OPTS=" \
         --color=bg+:#313244,bg:#1e1e2e,spinner:#f5e0dc,hl:#f38ba8 \
         --color=fg:#cdd6f4,header:#f38ba8,info:#cba6f7,pointer:#f5e0dc \
@@ -148,3 +148,7 @@ fi
 [[ -f "$HOME/.bashrc.local" ]] && source "$HOME/.bashrc.local"
 
 . "$HOME/.local/share/../bin/env"
+
+
+# Added by Antigravity CLI installer
+export PATH="/Users/eelko/.local/bin:$PATH"

@@ -22,10 +22,8 @@ brew "tealdeer"           # Fast tldr pages client
 # ─── Fonts ──────────────────────────────────────────────────────
 cask "font-jetbrains-mono-nerd-font"
 
-# ─── Terminal Emulators ─────────────────────────────────────────
-cask "ghostty"            # Native, fast, modern terminal
+# ─── Terminal Emulator ──────────────────────────────────────────
 cask "iterm2"             # Feature-rich macOS terminal
-cask "alacritty"          # GPU-accelerated terminal
 
 # ─── Apps (macOS) ──────────────────────────────────────────────
 cask "xbar"               # Menu bar plugin manager

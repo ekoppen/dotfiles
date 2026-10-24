@@ -209,28 +209,11 @@ fi
 
 # ─── Terminal Emulator (Workstation only) ────────────────────────
 
-if [[ "$PROFILE" == "workstation" ]] && [[ "$INTERACTIVE" != "1" ]]; then
-    if [[ -z "$TERMINAL" ]]; then
-        echo -e "${BOLD}── Terminal Emulator ──${NC}"
-        echo ""
-        echo -e "  ${BOLD}1)${NC} Ghostty     — native, fast, modern"
-        echo -e "  ${BOLD}2)${NC} iTerm2      — feature-rich macOS terminal"
-        echo -e "  ${BOLD}3)${NC} Alacritty   — GPU-accelerated, cross-platform"
-        echo -e "  ${BOLD}4)${NC} All         — install all available terminals"
-        echo -e "  ${BOLD}5)${NC} Skip        — don't install a terminal"
-        echo ""
-        TERM_CHOICE="$(ask "Select terminal [1-5]:" "1")"
-        case "$TERM_CHOICE" in
-            1|ghostty|Ghostty)     TERMINAL="ghostty" ;;
-            2|iterm|iterm2|iTerm2) TERMINAL="iterm2" ;;
-            3|alacritty|Alacritty) TERMINAL="alacritty" ;;
-            4|all|All)             TERMINAL="all" ;;
-            *)                     TERMINAL="skip" ;;
-        esac
-        echo ""
-    fi
-elif [[ "$INTERACTIVE" == "1" ]]; then
-    TERMINAL="${TERMINAL:-all}"
+# iTerm2 is the only supported terminal. Set DOTFILES_TERMINAL=skip to opt out.
+if [[ "$PROFILE" == "workstation" ]]; then
+    TERMINAL="${TERMINAL:-iterm2}"
+else
+    TERMINAL="${TERMINAL:-skip}"
 fi
 
 # ─── Core CLI Tools (if not already via Brewfile) ────────────────
@@ -320,28 +303,7 @@ echo ""
 
 # ─── Terminal Emulator Install & Config ─────────────────────────
 
-if [[ "$TERMINAL" == "ghostty" || "$TERMINAL" == "all" ]]; then
-    echo -e "${BOLD}── Ghostty ──${NC}"
-
-    # Install Ghostty if not present
-    if command -v ghostty &>/dev/null || [[ -d "/Applications/Ghostty.app" ]]; then
-        info "Ghostty already installed"
-    elif [[ "$OS" == "Darwin" ]] && command -v brew &>/dev/null; then
-        info "Installing Ghostty..."
-        brew install --cask ghostty 2>/dev/null && \
-            success "Installed Ghostty via Homebrew" || \
-            warn "Ghostty install failed — install manually: https://ghostty.org"
-    else
-        warn "Ghostty not found — install manually: https://ghostty.org"
-    fi
-
-    # Link config
-    mkdir -p "$HOME/.config/ghostty"
-    backup_and_link "$DOTFILES_DIR/config/ghostty/config" "$HOME/.config/ghostty/config"
-    echo ""
-fi
-
-if [[ "$TERMINAL" == "iterm2" || "$TERMINAL" == "all" ]]; then
+if [[ "$TERMINAL" == "iterm2" ]]; then
     echo -e "${BOLD}── iTerm2 ──${NC}"
 
     # Install iTerm2 if not present (macOS only)
@@ -372,41 +334,6 @@ if [[ "$TERMINAL" == "iterm2" || "$TERMINAL" == "all" ]]; then
         fi
     fi
 
-    echo ""
-fi
-
-if [[ "$TERMINAL" == "alacritty" || "$TERMINAL" == "all" ]]; then
-    echo -e "${BOLD}── Alacritty ──${NC}"
-
-    # Install Alacritty if not present
-    if command -v alacritty &>/dev/null || [[ -d "/Applications/Alacritty.app" ]]; then
-        info "Alacritty already installed"
-    elif [[ "$OS" == "Darwin" ]] && command -v brew &>/dev/null; then
-        info "Installing Alacritty..."
-        brew install --cask alacritty 2>/dev/null && \
-            success "Installed Alacritty via Homebrew" || \
-            warn "Alacritty install failed — install manually: https://alacritty.org"
-    elif command -v apt-get &>/dev/null; then
-        info "Installing Alacritty..."
-        sudo apt-get install -y alacritty -qq 2>/dev/null && \
-            success "Installed Alacritty via apt" || \
-            warn "Alacritty install failed — install manually: https://alacritty.org"
-    elif command -v dnf &>/dev/null; then
-        info "Installing Alacritty..."
-        sudo dnf install -y alacritty -q 2>/dev/null && \
-            success "Installed Alacritty via dnf" || \
-            warn "Alacritty install failed — install manually: https://alacritty.org"
-    else
-        warn "Alacritty not found — install manually: https://alacritty.org"
-    fi
-
-    # Link config
-    mkdir -p "$HOME/.config/alacritty"
-    if [[ "$OS" == "Darwin" ]]; then
-        backup_and_link "$DOTFILES_DIR/config/alacritty/alacritty.toml" "$HOME/.config/alacritty/alacritty.toml"
-    else
-        backup_and_link "$DOTFILES_DIR/config/alacritty/alacritty-linux.toml" "$HOME/.config/alacritty/alacritty.toml"
-    fi
     echo ""
 fi
 

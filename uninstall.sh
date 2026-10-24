@@ -35,9 +35,8 @@ TARGETS=(
     "$HOME/.ssh/config"
     "$HOME/.ssh/config.d/00-defaults"
     "$HOME/.ssh/config.d/homelab"
-    "$HOME/.config/alacritty/alacritty.toml"
-    "$HOME/.config/ghostty/config"
     "$HOME/.config/starship.toml"
+    "$HOME/Library/Application Support/iTerm2/DynamicProfiles/catppuccin-mocha.json"
     "$HOME/.tmux.conf"
     "$HOME/.nanorc"
     "$HOME/.claude/settings.json"
@@ -74,7 +73,6 @@ if [[ -d "$BACKUP_BASE" ]]; then
                 gitconfig)        cp "$file" "$HOME/.gitconfig" ;;
                 gitignore_global) cp "$file" "$HOME/.gitignore_global" ;;
                 config)           cp "$file" "$HOME/.ssh/config" ;;
-                alacritty.toml)   cp "$file" "$HOME/.config/alacritty/alacritty.toml" ;;
                 starship.toml)    cp "$file" "$HOME/.config/starship.toml" ;;
                 tmux.conf)        cp "$file" "$HOME/.tmux.conf" ;;
                 nanorc)           cp "$file" "$HOME/.nanorc" ;;

@@ -1,7 +1,7 @@
 # ╔══════════════════════════════════════════════════════════════════════════════╗
 # ║                          🔧 Nano Configuration                            ║
 # ║                                                                            ║
-# ║  Linux-versie — navigatie consistent met Alacritty config                  ║
+# ║  Linux-versie — navigatie consistent met iTerm2 config                     ║
 # ║  Place this file at: ~/.nanorc                                             ║
 # ╚══════════════════════════════════════════════════════════════════════════════╝
 
@@ -28,7 +28,7 @@ set positionlog            # Onthoudt cursorpositie per bestand
 
 # ─── Navigatie-bindings ──────────────────────────────────────────────────────
 #
-#  Op Linux stuurt Alacritty Alt+pijltjes als M-B / M-F.
+#  Met Option als Esc+ stuurt de terminal Alt+pijltjes als M-B / M-F.
 #  In nano 8+ zijn M-B en M-F hernoemd naar search backward/forward.
 #  We binden ze terug naar woord-navigatie:
 #
@@ -53,10 +53,10 @@ include "/usr/share/nano/*.nanorc"
 #    Alt+Left/Right         Spring woord voor woord
 #    Home / End             Begin/eind van regel
 #    Ctrl+Up/Down           Spring blok voor blok
-#    Ctrl+Home/End          Scroll naar top/bodem (Alacritty scrollback)
+#    Ctrl+Home/End          Scroll naar top/bodem
 #
 #  Selecteren:
-#    Shift + muisklik/sleep Selecteer tekst (Alacritty pakt selectie)
+#    Shift + muisklik/sleep Selecteer tekst (terminal pakt selectie)
 #    M-A (Alt+A)            Begin selectie met toetsenbord
 #    dan pijltjes           Breid selectie uit
 #
@@ -67,7 +67,7 @@ include "/usr/share/nano/*.nanorc"
 #    Ctrl+Y                 Opnieuw doen
 #    Ctrl+K                 Knip regel
 #    Ctrl+U                 Plak geknipte regel
-#    Alt+Backspace          Verwijder woord links (via Alacritty → Ctrl+W)
+#    Alt+Backspace          Verwijder woord links
 #
 #  Zoeken:
 #    Ctrl+W                 Zoeken

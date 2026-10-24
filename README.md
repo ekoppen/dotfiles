@@ -28,7 +28,7 @@ The installer asks which profile to use:
 | CLI tools (fzf, ripgrep, bat, fd, eza, zoxide, delta, tldr) | ✔ | ✔ |
 | Nerd Font (JetBrainsMono) | ✔ | ✔ |
 | Zsh plugins (autosuggestions, syntax-highlighting) | ✔ | ✔ |
-| Terminal emulator (Ghostty / iTerm2 / Alacritty) | ✔ | — |
+| Terminal emulator (iTerm2) | ✔ (macOS) | — |
 | xbar (Mac-Mux tmux menu) | ✔ (macOS) | — |
 | Homebrew | ✔ | — |
 | Nano config | — | ✔ (Linux) |
@@ -72,8 +72,7 @@ The installer asks which profile to use:
 │   └── mac-mux.10s.sh  # xbar plugin for tmux menu bar
 ├── config/
 │   ├── starship.toml   # Starship prompt (Catppuccin Mocha)
-│   ├── alacritty/      # Alacritty terminal (macOS + Linux)
-│   ├── ghostty/        # Ghostty terminal
+│   ├── iterm2/         # iTerm2 profile (Catppuccin Mocha)
 │   └── nvim/           # Neovim (placeholder)
 ├── nano/               # Nano config (Linux servers)
 ├── claude/             # Claude Code settings
@@ -106,7 +105,7 @@ You can also preset choices via environment variables:
 
 ```bash
 DOTFILES_PROFILE=server DOTFILES_UPDATE=1 ./install.sh
-DOTFILES_PROFILE=workstation DOTFILES_TERMINAL=ghostty DOTFILES_UPDATE=1 ./install.sh
+DOTFILES_PROFILE=workstation DOTFILES_TERMINAL=skip DOTFILES_UPDATE=1 ./install.sh
 ```
 
 ## Per-Machine Overrides
