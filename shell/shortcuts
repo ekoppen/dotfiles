@@ -23,3 +23,4 @@ Dotfiles bijwerken (pull + install)|cd ~/.dotfiles && git pull && ./install.sh
 
 SSH naar oudenas (Synology)|ssh -p 2222 eelko@192.168.69.249
 SSH naar host op IP|ssh {user}@{ip}
+Remote shutdown|ssh -t {user}@{host} 'sudo shutdown -h now'
