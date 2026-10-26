@@ -16,6 +16,7 @@
 
 Dotfiles: shortcuts bewerken (gedeeld)|$EDITOR ~/.dotfiles/shell/shortcuts
 Dotfiles: shortcuts bewerken (lokaal)|$EDITOR ~/.dotfiles/shell/shortcuts.local
+Dotfiles: lokale shortcuts kopiëren naar shared|comm -13 <(sort ~/.dotfiles/shell/shortcuts) <(grep -vE '^[[:space:]]*(#|$)' ~/.dotfiles/shell/shortcuts.local | sort) >> ~/.dotfiles/shell/shortcuts
 Dotfiles: shortcuts committen + pushen|cd ~/.dotfiles && git add shell/shortcuts && git commit -m "{message}" && git push
 Dotfiles bijwerken (pull + install)|cd ~/.dotfiles && git pull && ./install.sh
 
@@ -24,3 +25,6 @@ Dotfiles bijwerken (pull + install)|cd ~/.dotfiles && git pull && ./install.sh
 SSH naar oudenas (Synology)|ssh -p 2222 eelko@192.168.69.249
 SSH naar host op IP|ssh {user}@{ip}
 Remote shutdown|ssh -t {user}@{host} 'sudo shutdown -h now'
+Hermes01 Hindsight-tunnel aan|~/.local/bin/hermes01-tunnel start
+Hermes01 Hindsight-tunnel status|~/.local/bin/hermes01-tunnel status
+Hermes01 Hindsight-tunnel uit|~/.local/bin/hermes01-tunnel stop
