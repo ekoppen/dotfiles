@@ -276,6 +276,19 @@ backup_and_link "$DOTFILES_DIR/shell/functions"     "$HOME/.functions"
 
 echo ""
 
+# ─── Personal Scripts ──────────────────────────────────────────────
+
+echo -e "${BOLD}── Scripts ──${NC}"
+
+mkdir -p "$HOME/.local/bin"
+for script in "$DOTFILES_DIR"/bin/*; do
+    [[ -f "$script" ]] || continue
+    backup_and_link "$script" "$HOME/.local/bin/$(basename "$script")"
+    chmod +x "$HOME/.local/bin/$(basename "$script")"
+done
+
+echo ""
+
 # ─── Git Config ───────────────────────────────────────────────────
 
 echo -e "${BOLD}── Git ──${NC}"

@@ -1,0 +1,68 @@
+#!/bin/bash
+# Start/stop/status for the SSH tunnel to hermes01's Hindsight API (8888) and
+# Hermes dashboard (9119). ~/.ssh/config has global ControlMaster/ControlPersist,
+# so forwards get added to the shared multiplexed connection rather than a
+# dedicated process — no pidfile to track, just check/cancel forwards on the
+# master itself.
+# Avoids bash 4+ associative arrays (macOS ships bash 3.2) — plain pairs instead.
+HOST="admin@hermes01"
+PORTS="8888 9119"
+label() { case "$1" in 8888) echo "Hindsight";; 9119) echo "Hermes-dashboard";; esac; }
+
+fwd_args() {
+    for port in $PORTS; do
+        echo -L "127.0.0.1:$port:127.0.0.1:$port"
+    done
+}
+
+port_up() {
+    curl -s -o /dev/null -m 2 "http://127.0.0.1:$1/" 2>/dev/null
+    [ "$?" -lt 7 ] # curl connected (any HTTP response, even 401/404) vs refused/timeout
+}
+
+any_up() { for port in $PORTS; do port_up "$port" && return 0; done; return 1; }
+all_up() { for port in $PORTS; do port_up "$port" || return 1; done; return 0; }
+
+case "$1" in
+  start)
+    if all_up; then
+        echo "Tunnel draait al — Hindsight + dashboard bereikbaar."
+        exit 0
+    fi
+    ssh -f -N -o ExitOnForwardFailure=yes $(fwd_args) "$HOST" 2>&1
+    sleep 1
+    if all_up; then
+        echo "Tunnel gestart — Hindsight (8888) + dashboard (9119) bereikbaar."
+    else
+        echo "Tunnel starten (deels) mislukt — check handmatig."
+        exit 1
+    fi
+    ;;
+  stop)
+    if ! any_up; then
+        echo "Tunnel was al uit."
+        exit 0
+    fi
+    ssh -O cancel $(fwd_args) "$HOST" 2>&1
+    sleep 1
+    if any_up; then
+        echo "Tunnel stoppen mislukt — nog (deels) bereikbaar."
+        exit 1
+    else
+        echo "Tunnel gestopt."
+    fi
+    ;;
+  status)
+    for port in $PORTS; do
+        if port_up "$port"; then
+            echo "$(label "$port") (:$port) — bereikbaar."
+        else
+            echo "$(label "$port") (:$port) — uit."
+        fi
+    done
+    ;;
+  *)
+    echo "Gebruik: $0 {start|stop|status}"
+    exit 1
+    ;;
+esac

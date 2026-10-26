@@ -26,6 +26,15 @@ SSH naar oudenas (Synology)|ssh -p 2222 eelko@192.168.69.249
 SSH naar host op IP|ssh {user}@{ip}
 Remote shutdown|ssh -t {user}@{host} 'sudo shutdown -h now'
 Terminfo naar host kopiëren (Ghostty-fix voor nano/vim)|infocmp xterm-ghostty | ssh {host} tic -x -
+
+# ─── Hermes01 (Hermes Agent + Hindsight) ───────────────────────────
+
+Hermes01 tunnel aan (Hindsight+dashboard)|~/.local/bin/hermes01-tunnel start
+Hermes01 tunnel uit (Hindsight+dashboard)|~/.local/bin/hermes01-tunnel stop
+Hermes01 tunnel status (Hindsight+dashboard)|~/.local/bin/hermes01-tunnel status
+Hermes01 dashboard aan|ssh admin@hermes01 'nohup ~/.local/bin/hermes dashboard --no-open --skip-build > /tmp/hermes-dashboard.log 2>&1 & disown'
+Hermes01 dashboard uit|ssh admin@hermes01 '~/.local/bin/hermes dashboard --stop'
+Hermes01 dashboard status|ssh admin@hermes01 '~/.local/bin/hermes dashboard --status'
 Hermes01 Hindsight-tunnel aan|~/.local/bin/hermes01-tunnel start
 Hermes01 Hindsight-tunnel status|~/.local/bin/hermes01-tunnel status
 Hermes01 Hindsight-tunnel uit|~/.local/bin/hermes01-tunnel stop
