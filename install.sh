@@ -462,6 +462,32 @@ if [[ "$OS" == "Darwin" ]] && [[ "$PROFILE" == "workstation" ]]; then
     echo ""
 fi
 
+# ─── Snapclip (macOS workstation only) ──────────────────────────
+
+if [[ "$OS" == "Darwin" ]] && [[ "$PROFILE" == "workstation" ]]; then
+    echo -e "${BOLD}── Snapclip ──${NC}"
+
+    SNAPCLIP_SRC="$HOME/.local/src/snapclip"
+    if [[ -d "/Applications/Snapclip.app" ]]; then
+        info "Snapclip already installed"
+    elif ! command -v swiftc &>/dev/null; then
+        warn "swiftc not found — run 'xcode-select --install', then re-run"
+    else
+        # Private repo → needs SSH key with GitHub access
+        if [[ ! -d "$SNAPCLIP_SRC" ]]; then
+            mkdir -p "$(dirname "$SNAPCLIP_SRC")"
+            git clone -q git@github.com:ekoppen/snapclip.git "$SNAPCLIP_SRC" || warn "Snapclip clone failed (SSH key?)"
+        fi
+        if [[ -x "$SNAPCLIP_SRC/build.sh" ]]; then
+            "$SNAPCLIP_SRC/build.sh" >/dev/null && \
+                success "Installed Snapclip → /Applications (grant Screen Recording on first use)" || \
+                warn "Snapclip build failed"
+        fi
+    fi
+
+    echo ""
+fi
+
 # ─── Claude Code ─────────────────────────────────────────────────
 
 echo -e "${BOLD}── Claude Code ──${NC}"
