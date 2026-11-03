@@ -488,6 +488,34 @@ if [[ "$OS" == "Darwin" ]] && [[ "$PROFILE" == "workstation" ]]; then
     echo ""
 fi
 
+# ─── Apikop (API-test-app, macOS workstation only) ──────────────
+
+if [[ "$OS" == "Darwin" ]] && [[ "$PROFILE" == "workstation" ]]; then
+    echo -e "${BOLD}── Apikop ──${NC}"
+    APIKOP_SRC="$HOME/.local/src/apikop"
+
+    if ! command -v swiftc &>/dev/null; then
+        warn "swiftc ontbreekt — installeer eerst: xcode-select --install (Apikop overgeslagen)"
+    else
+        if [[ -d "$APIKOP_SRC/.git" ]]; then
+            git -C "$APIKOP_SRC" pull -q --ff-only || warn "Apikop: git pull mislukt, bouw bestaande versie"
+        else
+            mkdir -p "$(dirname "$APIKOP_SRC")"
+            git clone -q git@github.com:ekoppen/apikop.git "$APIKOP_SRC" || warn "Apikop: clonen mislukt (SSH-key?)"
+        fi
+        if [[ -x "$APIKOP_SRC/scripts/build.sh" ]] && "$APIKOP_SRC/scripts/build.sh" >/dev/null; then
+            mkdir -p "$HOME/Applications"
+            rm -rf "$HOME/Applications/Apikop.app"
+            cp -R "$APIKOP_SRC/build/Apikop.app" "$HOME/Applications/"
+            success "Apikop geïnstalleerd in ~/Applications"
+        else
+            warn "Apikop: bouwen mislukt"
+        fi
+    fi
+
+    echo ""
+fi
+
 # ─── Claude Code ─────────────────────────────────────────────────
 
 echo -e "${BOLD}── Claude Code ──${NC}"
