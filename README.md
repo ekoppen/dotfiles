@@ -28,6 +28,7 @@ The installer asks which profile to use:
 | CLI tools (fzf, ripgrep, bat, fd, eza, zoxide, delta, tldr) | ✔ | ✔ |
 | Nerd Font (JetBrainsMono) | ✔ | ✔ |
 | Zsh plugins (autosuggestions, syntax-highlighting) | ✔ | ✔ |
+| Terminal.app profile (Catppuccin Mocha) | ✔ (macOS) | — |
 | Own apps (Snapclip, Apikop, Headstart — asked per app) | ✔ (macOS) | — |
 | Homebrew | ✔ | — |
 | Nano config | — | ✔ (Linux) |

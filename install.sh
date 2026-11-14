@@ -361,6 +361,25 @@ if [[ "$OS" != "Darwin" ]] && [[ -f "$DOTFILES_DIR/nano/nanorc-linux" ]]; then
     echo ""
 fi
 
+# ─── Terminal.app profile (macOS workstation only) ──────────────
+
+if [[ "$OS" == "Darwin" ]] && [[ "$PROFILE" == "workstation" ]]; then
+    echo -e "${BOLD}── Terminal.app ──${NC}"
+
+    if defaults read com.apple.Terminal "Window Settings" 2>/dev/null | grep -q "Catppuccin Mocha"; then
+        info "Catppuccin Mocha profile already imported"
+    else
+        # open imports the profile (and pops up one window)
+        open "$DOTFILES_DIR/config/terminal/catppuccin-mocha.terminal" && sleep 2 && \
+            defaults write com.apple.Terminal "Default Window Settings" -string "Catppuccin Mocha" && \
+            defaults write com.apple.Terminal "Startup Window Settings" -string "Catppuccin Mocha" && \
+            success "Imported Catppuccin Mocha as default Terminal profile (restart Terminal to apply)" || \
+            warn "Terminal profile import failed"
+    fi
+
+    echo ""
+fi
+
 # ─── Own apps (macOS workstation only) ──────────────────────────
 # Add a future app = add one line: "name|github repo|build command|built .app (relative to repo)"
 # Private repos → needs an SSH key with GitHub access.
