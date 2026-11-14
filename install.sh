@@ -395,7 +395,7 @@ if [[ "$OS" == "Darwin" ]] && [[ "$PROFILE" == "workstation" ]]; then
     for entry in "${MY_APPS[@]}"; do
         IFS='|' read -r app_name app_repo app_build app_path <<< "$entry"
         app_src="$HOME/.local/src/$(echo "$app_name" | tr A-Z a-z)"
-        installed=0; [[ -d "/Applications/$app_name.app" ]] && installed=1
+        installed=0; [[ -d "$HOME/Applications/$app_name.app" ]] && installed=1
 
         if [[ "$installed" == "1" ]]; then
             # Update mode: refresh apps that are already installed, rebuild only on new commits
@@ -413,9 +413,11 @@ if [[ "$OS" == "Darwin" ]] && [[ "$PROFILE" == "workstation" ]]; then
         fi
 
         if (cd "$app_src" && $app_build >/dev/null); then
-            rm -rf "/Applications/$app_name.app"
-            cp -R "$app_src/$app_path" /Applications/
-            success "Installed $app_name → /Applications"
+            mkdir -p "$HOME/Applications"
+            rm -rf "$HOME/Applications/$app_name.app"
+            cp -R "$app_src/$app_path" "$HOME/Applications/"
+            success "Installed $app_name → ~/Applications"
+            [[ -d "/Applications/$app_name.app" ]] && warn "Old copy in /Applications — remove it to avoid duplicates"
         else
             warn "$app_name build failed"
         fi
