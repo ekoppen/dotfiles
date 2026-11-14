@@ -381,21 +381,44 @@ if [[ "$OS" == "Darwin" ]] && [[ "$PROFILE" == "workstation" ]]; then
 fi
 
 # ─── Own apps (macOS workstation only) ──────────────────────────
-# Add a future app = add one line: "name|github repo|build command|built .app (relative to repo)"
+# Add a future app = add one line: "name|github repo|build command|built .app (relative to repo)|release zip glob"
+# Release zip glob set → install from the latest GitHub release (needs `gh auth login`); empty → build from source.
 # Private repos → needs an SSH key with GitHub access.
 MY_APPS=(
-    "Snapclip|ekoppen/snapclip|./build.sh|build/Snapclip.app"
-    "Apikop|ekoppen/apikop|scripts/build.sh|build/Apikop.app"
-    "Headstart|ekoppen/headstart|./build-app.sh|Headstart.app"
+    "Snapclip|ekoppen/snapclip|./build.sh|build/Snapclip.app|"
+    "Apikop|ekoppen/apikop|scripts/build.sh|build/Apikop.app|Apikop-*.zip"
+    "Headstart|ekoppen/headstart|./build-app.sh|Headstart.app|"
 )
 
 if [[ "$OS" == "Darwin" ]] && [[ "$PROFILE" == "workstation" ]]; then
     echo -e "${BOLD}── Own apps ──${NC}"
 
     for entry in "${MY_APPS[@]}"; do
-        IFS='|' read -r app_name app_repo app_build app_path <<< "$entry"
+        IFS='|' read -r app_name app_repo app_build app_path app_release <<< "$entry"
         app_src="$HOME/.local/src/$(echo "$app_name" | tr A-Z a-z)"
         installed=0; [[ -d "$HOME/Applications/$app_name.app" ]] && installed=1
+
+        if [[ -n "$app_release" ]]; then
+            if [[ "$installed" == "1" ]]; then
+                [[ "$INTERACTIVE" == "1" ]] || { info "$app_name already installed"; continue; }
+                latest="$(gh release view -R "$app_repo" --json tagName -q .tagName 2>/dev/null || true)"
+                current="$(defaults read "$HOME/Applications/$app_name.app/Contents/Info" CFBundleShortVersionString 2>/dev/null || true)"
+                [[ -n "$latest" && "v$current" != "$latest" ]] || { info "$app_name up to date"; continue; }
+            else
+                [[ "$(ask_yn "Install $app_name?" "n")" =~ ^[Yy] ]] || continue
+            fi
+            tmp="$(mktemp -d)"
+            if gh release download -R "$app_repo" -p "$app_release" -D "$tmp" &>/dev/null && ditto -x -k "$tmp"/*.zip "$tmp/x"; then
+                mkdir -p "$HOME/Applications"
+                rm -rf "$HOME/Applications/$app_name.app"
+                cp -R "$tmp/x/$app_name.app" "$HOME/Applications/"
+                success "Installed $app_name (release) → ~/Applications"
+            else
+                warn "$app_name release download failed (gh auth login?)"
+            fi
+            rm -rf "$tmp"
+            continue
+        fi
 
         if [[ "$installed" == "1" ]]; then
             # Update mode: refresh apps that are already installed, rebuild only on new commits
