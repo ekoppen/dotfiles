@@ -24,12 +24,11 @@ The installer asks which profile to use:
 | Shell (zsh + bash) | ✔ | ✔ |
 | Git, SSH configs | ✔ | ✔ |
 | Starship prompt | ✔ | ✔ |
-| tmux + plugins | ✔ | ✔ |
+| herdr (agent multiplexer) | ✔ | ✔ |
 | CLI tools (fzf, ripgrep, bat, fd, eza, zoxide, delta, tldr) | ✔ | ✔ |
 | Nerd Font (JetBrainsMono) | ✔ | ✔ |
 | Zsh plugins (autosuggestions, syntax-highlighting) | ✔ | ✔ |
-| Terminal emulator (iTerm2) | ✔ (macOS) | — |
-| xbar (Mac-Mux tmux menu) | ✔ (macOS) | — |
+| Own apps (Snapclip, Apikop, Headstart — asked per app) | ✔ (macOS) | — |
 | Homebrew | ✔ | — |
 | Nano config | — | ✔ (Linux) |
 
@@ -67,12 +66,8 @@ The installer asks which profile to use:
 │   └── config.d/
 │       ├── 00-defaults # Global SSH defaults
 │       └── homelab     # Homelab servers
-├── tmux/
-│   ├── .tmux.conf      # tmux config (Catppuccin, TPM, vi-keys)
-│   └── mac-mux.10s.sh  # xbar plugin for tmux menu bar
 ├── config/
 │   ├── starship.toml   # Starship prompt (Catppuccin Mocha)
-│   ├── iterm2/         # iTerm2 profile (Catppuccin Mocha)
 │   └── nvim/           # Neovim (placeholder)
 ├── nano/               # Nano config (Linux servers)
 ├── claude/             # Claude Code settings
@@ -89,7 +84,7 @@ This will:
 1. Pull latest changes from git
 2. Re-run symlinks (non-interactive)
 3. Upgrade Homebrew packages (if available)
-4. Update tmux plugins and tldr cache
+4. Update tldr cache
 
 Or use the alias: `dotfiles-update`
 
@@ -117,12 +112,11 @@ These files are created automatically and ignored by git:
 | `~/.zshrc.local` | Machine-specific zsh config |
 | `~/.bashrc.local` | Machine-specific bash config |
 | `~/.gitconfig.local` | Git name/email, machine-specific settings |
-| `~/.tmux.conf.local` | Machine-specific tmux config |
 | `~/.ssh/config.d/local` | Machine-specific SSH hosts |
 
 ## Theme
 
-Everything uses **Catppuccin Mocha** — terminal, tmux, git delta, fzf, starship.
+Everything uses **Catppuccin Mocha** — terminal, git delta, fzf, starship.
 
 ## Uninstall
 

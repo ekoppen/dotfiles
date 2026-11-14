@@ -145,7 +145,6 @@ echo ""
 # ─── Profile Selection ───────────────────────────────────────────
 
 PROFILE="${DOTFILES_PROFILE:-}"
-TERMINAL="${DOTFILES_TERMINAL:-}"
 INSTALL_BREW="${DOTFILES_BREW:-}"
 
 if [[ "$INTERACTIVE" != "1" ]]; then
@@ -207,15 +206,6 @@ if [[ "$OS" == "Darwin" ]] || [[ "$PROFILE" == "workstation" ]]; then
     echo ""
 fi
 
-# ─── Terminal Emulator (Workstation only) ────────────────────────
-
-# iTerm2 is the only supported terminal. Set DOTFILES_TERMINAL=skip to opt out.
-if [[ "$PROFILE" == "workstation" ]]; then
-    TERMINAL="${TERMINAL:-iterm2}"
-else
-    TERMINAL="${TERMINAL:-skip}"
-fi
-
 # ─── Core CLI Tools (if not already via Brewfile) ────────────────
 
 echo -e "${BOLD}── Core Tools ──${NC}"
@@ -226,7 +216,7 @@ if command -v apt-get &>/dev/null && [[ "$OS" != "Darwin" ]]; then
 fi
 
 install_package "starship" "starship" "starship" "starship"
-install_package "tmux"     "tmux"     "tmux"     "tmux"
+install_package "herdr"    "herdr"    "herdr"    "herdr"
 install_package "fzf"      "fzf"      "fzf"      "fzf"
 install_package "rg"       "ripgrep"  "ripgrep"  "ripgrep"
 install_package "zoxide"   "zoxide"   "zoxide"   "zoxide"
@@ -314,42 +304,6 @@ chmod 600 "$HOME/.ssh/config.d/"* 2>/dev/null || true
 
 echo ""
 
-# ─── Terminal Emulator Install & Config ─────────────────────────
-
-if [[ "$TERMINAL" == "iterm2" ]]; then
-    echo -e "${BOLD}── iTerm2 ──${NC}"
-
-    # Install iTerm2 if not present (macOS only)
-    if [[ -d "/Applications/iTerm.app" ]]; then
-        info "iTerm2 already installed"
-    elif [[ "$OS" == "Darwin" ]] && command -v brew &>/dev/null; then
-        info "Installing iTerm2..."
-        brew install --cask iterm2 2>/dev/null && \
-            success "Installed iTerm2 via Homebrew" || \
-            warn "iTerm2 install failed — install manually: https://iterm2.com"
-    elif [[ "$OS" == "Darwin" ]]; then
-        warn "iTerm2 not found — install via Homebrew or https://iterm2.com"
-    else
-        info "iTerm2 is macOS only — skipping on Linux"
-    fi
-
-    # Import Catppuccin Mocha profile into iTerm2
-    if [[ "$OS" == "Darwin" ]] && [[ -f "$DOTFILES_DIR/config/iterm2/catppuccin-mocha.json" ]]; then
-        ITERM2_PROFILES_DIR="$HOME/Library/Application Support/iTerm2/DynamicProfiles"
-        mkdir -p "$ITERM2_PROFILES_DIR"
-        backup_and_link "$DOTFILES_DIR/config/iterm2/catppuccin-mocha.json" "$ITERM2_PROFILES_DIR/catppuccin-mocha.json"
-        success "Loaded Catppuccin Mocha profile (restart iTerm2 to apply)"
-
-        # Set Catppuccin Mocha as default profile
-        if defaults read com.googlecode.iterm2 &>/dev/null 2>&1; then
-            defaults write com.googlecode.iterm2 "Default Bookmark Guid" -string "catppuccin-mocha-dotfiles"
-            success "Set Catppuccin Mocha as default iTerm2 profile"
-        fi
-    fi
-
-    echo ""
-fi
-
 # ─── Nerd Font ───────────────────────────────────────────────────
 
 echo -e "${BOLD}── Nerd Font (JetBrainsMono) ──${NC}"
@@ -399,40 +353,6 @@ backup_and_link "$DOTFILES_DIR/config/starship.toml" "$HOME/.config/starship.tom
 
 echo ""
 
-# ─── Tmux ───────────────────────────────────────────────────────
-
-echo -e "${BOLD}── Tmux ──${NC}"
-
-backup_and_link "$DOTFILES_DIR/tmux/.tmux.conf" "$HOME/.tmux.conf"
-
-echo ""
-
-# ─── TPM (Tmux Plugin Manager) ─────────────────────────────────
-
-echo -e "${BOLD}── TPM (Tmux Plugin Manager) ──${NC}"
-
-TPM_DIR="$HOME/.tmux/plugins/tpm"
-
-if [[ -d "$TPM_DIR" ]]; then
-    info "TPM already installed"
-else
-    if command -v git &>/dev/null; then
-        git clone --depth 1 https://github.com/tmux-plugins/tpm "$TPM_DIR" 2>/dev/null
-        success "Installed TPM"
-    else
-        warn "git not found — skipping TPM installation"
-    fi
-fi
-
-# Auto-install plugins (headless, no tmux server needed)
-if command -v tmux &>/dev/null && [[ -x "$TPM_DIR/bin/install_plugins" ]]; then
-    info "Installing tmux plugins..."
-    "$TPM_DIR/bin/install_plugins" >/dev/null 2>&1
-    success "Tmux plugins installed"
-fi
-
-echo ""
-
 # ─── Nano (Linux server) ────────────────────────────────────────
 
 if [[ "$OS" != "Darwin" ]] && [[ -f "$DOTFILES_DIR/nano/nanorc-linux" ]]; then
@@ -441,49 +361,46 @@ if [[ "$OS" != "Darwin" ]] && [[ -f "$DOTFILES_DIR/nano/nanorc-linux" ]]; then
     echo ""
 fi
 
-# ─── xbar + Mac-Mux (macOS workstation only) ────────────────────
+# ─── Own apps (macOS workstation only) ──────────────────────────
+# Add a future app = add one line: "name|github repo|build command|built .app (relative to repo)"
+# Private repos → needs an SSH key with GitHub access.
+MY_APPS=(
+    "Snapclip|ekoppen/snapclip|./build.sh|build/Snapclip.app"
+    "Apikop|ekoppen/apikop|scripts/build.sh|build/Apikop.app"
+    "Headstart|ekoppen/headstart|./build-app.sh|Headstart.app"
+)
 
 if [[ "$OS" == "Darwin" ]] && [[ "$PROFILE" == "workstation" ]]; then
-    echo -e "${BOLD}── xbar (Mac-Mux) ──${NC}"
+    echo -e "${BOLD}── Own apps ──${NC}"
 
-    if command -v brew &>/dev/null; then
-        if brew list --cask xbar &>/dev/null 2>&1; then
-            info "xbar already installed"
+    for entry in "${MY_APPS[@]}"; do
+        IFS='|' read -r app_name app_repo app_build app_path <<< "$entry"
+        app_src="$HOME/.local/src/$(echo "$app_name" | tr A-Z a-z)"
+        installed=0; [[ -d "/Applications/$app_name.app" ]] && installed=1
+
+        if [[ "$installed" == "1" ]]; then
+            # Update mode: refresh apps that are already installed, rebuild only on new commits
+            [[ "$INTERACTIVE" == "1" ]] || { info "$app_name already installed"; continue; }
+            before="$(git -C "$app_src" rev-parse HEAD 2>/dev/null || true)"
+            git -C "$app_src" pull -q --ff-only 2>/dev/null || { info "$app_name already installed (no source to update)"; continue; }
+            [[ "$before" != "$(git -C "$app_src" rev-parse HEAD)" ]] || { info "$app_name up to date"; continue; }
         else
-            info "Installing xbar..."
-            brew install --cask xbar 2>/dev/null && success "Installed xbar" || warn "xbar install failed"
+            [[ "$(ask_yn "Install $app_name?" "n")" =~ ^[Yy] ]] || continue
+            command -v swiftc &>/dev/null || { warn "swiftc not found — run 'xcode-select --install', then re-run"; continue; }
+            if [[ ! -d "$app_src" ]]; then
+                mkdir -p "$(dirname "$app_src")"
+                git clone -q "git@github.com:$app_repo.git" "$app_src" || { warn "$app_name clone failed (SSH key?)"; continue; }
+            fi
         fi
-    fi
 
-    XBAR_PLUGINS="$HOME/Library/Application Support/xbar/plugins"
-    mkdir -p "$XBAR_PLUGINS"
-    backup_and_link "$DOTFILES_DIR/tmux/mac-mux.10s.sh" "$XBAR_PLUGINS/mac-mux.10s.sh"
-
-    echo ""
-fi
-
-# ─── Snapclip (macOS workstation only) ──────────────────────────
-
-if [[ "$OS" == "Darwin" ]] && [[ "$PROFILE" == "workstation" ]]; then
-    echo -e "${BOLD}── Snapclip ──${NC}"
-
-    SNAPCLIP_SRC="$HOME/.local/src/snapclip"
-    if [[ -d "/Applications/Snapclip.app" ]]; then
-        info "Snapclip already installed"
-    elif ! command -v swiftc &>/dev/null; then
-        warn "swiftc not found — run 'xcode-select --install', then re-run"
-    else
-        # Private repo → needs SSH key with GitHub access
-        if [[ ! -d "$SNAPCLIP_SRC" ]]; then
-            mkdir -p "$(dirname "$SNAPCLIP_SRC")"
-            git clone -q git@github.com:ekoppen/snapclip.git "$SNAPCLIP_SRC" || warn "Snapclip clone failed (SSH key?)"
+        if (cd "$app_src" && $app_build >/dev/null); then
+            rm -rf "/Applications/$app_name.app"
+            cp -R "$app_src/$app_path" /Applications/
+            success "Installed $app_name → /Applications"
+        else
+            warn "$app_name build failed"
         fi
-        if [[ -x "$SNAPCLIP_SRC/build.sh" ]]; then
-            "$SNAPCLIP_SRC/build.sh" >/dev/null && \
-                success "Installed Snapclip → /Applications (grant Screen Recording on first use)" || \
-                warn "Snapclip build failed"
-        fi
-    fi
+    done
 
     echo ""
 fi
@@ -636,7 +553,6 @@ create_local_if_missing() {
 create_local_if_missing "$HOME/.zshrc.local"     "# Local zsh overrides (not tracked by git)"
 create_local_if_missing "$HOME/.bashrc.local"    "# Local bash overrides (not tracked by git)"
 create_local_if_missing "$HOME/.gitconfig.local" "# Local git overrides (not tracked by git)"
-create_local_if_missing "$HOME/.tmux.conf.local" "# Local tmux overrides (not tracked by git)"
 
 if [[ ! -f "$HOME/.ssh/config.d/local" ]]; then
     touch "$HOME/.ssh/config.d/local"
@@ -652,7 +568,6 @@ echo ""
 
 echo -e "${BOLD}${GREEN}✔ Done!${NC}"
 echo -e "  Profile:  ${BOLD}$PROFILE${NC}"
-[[ -n "${TERMINAL:-}" && "$TERMINAL" != "skip" ]] && echo -e "  Terminal: ${BOLD}$TERMINAL${NC}"
 if [[ -d "$BACKUP_DIR" ]]; then
     echo -e "  Backups:  ${YELLOW}$BACKUP_DIR${NC}"
 fi

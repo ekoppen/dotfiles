@@ -7,7 +7,7 @@
 
 # ─── Terminal & Shell ───────────────────────────────────────────
 brew "starship"           # Cross-shell prompt
-brew "tmux"               # Terminal multiplexer
+brew "herdr"             # Agent multiplexer
 brew "zoxide"             # Smart cd that learns your habits
 
 # ─── Modern CLI Replacements ───────────────────────────────────
@@ -23,7 +23,5 @@ brew "tealdeer"           # Fast tldr pages client
 cask "font-jetbrains-mono-nerd-font"
 
 # ─── Terminal Emulator ──────────────────────────────────────────
-cask "iterm2"             # Feature-rich macOS terminal
 
 # ─── Apps (macOS) ──────────────────────────────────────────────
-cask "xbar"               # Menu bar plugin manager

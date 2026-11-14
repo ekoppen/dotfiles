@@ -69,16 +69,6 @@ if command -v brew &>/dev/null; then
     echo ""
 fi
 
-# ─── Update Tmux Plugins ────────────────────────────────────────
-
-TPM_DIR="$HOME/.tmux/plugins/tpm"
-if [[ -x "$TPM_DIR/bin/update_plugins" ]]; then
-    echo -e "${BOLD}── Tmux Plugins ──${NC}"
-    "$TPM_DIR/bin/update_plugins" all >/dev/null 2>&1
-    success "Tmux plugins updated"
-    echo ""
-fi
-
 # ─── Update tldr Cache ──────────────────────────────────────────
 
 if command -v tldr &>/dev/null; then

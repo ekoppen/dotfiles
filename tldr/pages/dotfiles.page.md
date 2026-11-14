@@ -25,4 +25,4 @@
 
 - Available local override files:
 
-`~/.zshrc.local, ~/.bashrc.local, ~/.gitconfig.local, ~/.tmux.conf.local, ~/.ssh/config.d/local`
+`~/.zshrc.local, ~/.bashrc.local, ~/.gitconfig.local, ~/.ssh/config.d/local`

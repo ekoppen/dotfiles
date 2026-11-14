@@ -36,8 +36,6 @@ TARGETS=(
     "$HOME/.ssh/config.d/00-defaults"
     "$HOME/.ssh/config.d/homelab"
     "$HOME/.config/starship.toml"
-    "$HOME/Library/Application Support/iTerm2/DynamicProfiles/catppuccin-mocha.json"
-    "$HOME/.tmux.conf"
     "$HOME/.nanorc"
     "$HOME/.claude/settings.json"
     "$HOME/.claude/statusline.sh"
@@ -74,7 +72,6 @@ if [[ -d "$BACKUP_BASE" ]]; then
                 gitignore_global) cp "$file" "$HOME/.gitignore_global" ;;
                 config)           cp "$file" "$HOME/.ssh/config" ;;
                 starship.toml)    cp "$file" "$HOME/.config/starship.toml" ;;
-                tmux.conf)        cp "$file" "$HOME/.tmux.conf" ;;
                 nanorc)           cp "$file" "$HOME/.nanorc" ;;
             esac
             info "Restored $filename"
